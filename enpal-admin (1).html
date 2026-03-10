@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Enpal Partner — Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:       #f0ede8;
+      --ink-dim:   #7a8c7e;
+      --ink-faint: #2e3d32;
+      --bg:        #060908;
+      --surface:   #0b0f0c;
+      --card:      #0e1410;
+      --line:      rgba(255,255,255,0.06);
+      --em:        #c8f068;
+      --em2:       #5fd4a0;
+      --green:     #2a9d68;
+      --red:       #e05555;
+      --yellow:    #e0b955;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--ink);
+      font-family: 'Outfit', sans-serif; font-weight: 300;
+      line-height: 1.6; min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    body::after {
+      content: ''; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999;
+    }
+    .ambient { position: fixed; border-radius: 50%; filter: blur(150px); pointer-events: none; z-index: 0; }
+    .a1 { width: 500px; height: 500px; background: #0e3320; top: -200px; left: -150px; opacity: .4; }
+
+    /* LOGIN SCREEN */
+    .login-screen {
+      position: fixed; inset: 0; z-index: 200;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .login-box {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 4px; padding: 48px 40px; width: 360px;
+      text-align: center;
+    }
+    .login-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 600; color: var(--ink);
+      margin-bottom: 6px; letter-spacing: 0.04em;
+    }
+    .login-logo em { color: var(--em); font-style: normal; }
+    .login-sub { font-size: 12px; color: var(--ink-faint); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 36px; }
+    .login-label { font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint); display: block; text-align: left; margin-bottom: 6px; }
+    .login-input {
+      width: 100%; background: var(--surface); border: 1px solid var(--line);
+      border-radius: 2px; color: var(--ink); font-family: 'Outfit', sans-serif;
+      font-size: 15px; font-weight: 300; padding: 12px 14px; outline: none;
+      transition: border-color .15s; margin-bottom: 24px;
+    }
+    .login-input:focus { border-color: var(--green); }
+    .login-btn {
+      width: 100%; background: var(--em); color: #000;
+      font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 600;
+      letter-spacing: 0.2em; text-transform: uppercase; border: none;
+      border-radius: 2px; padding: 14px; cursor: pointer;
+      transition: opacity .2s;
+    }
+    .login-btn:hover { opacity: .85; }
+    .login-error { font-size: 12px; color: var(--red); margin-top: 12px; display: none; }
+
+    /* LAYOUT */
+    .shell { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; position: relative; z-index: 1; }
+    @media(max-width: 720px) { .shell { grid-template-columns: 1fr; } }
+
+    /* SIDEBAR */
+    aside {
+      background: var(--surface); border-right: 1px solid var(--line);
+      padding: 32px 0; display: flex; flex-direction: column;
+      position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    }
+    @media(max-width: 720px) { aside { display: none; } }
+    .aside-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px; font-weight: 600; color: var(--ink);
+      padding: 0 24px 28px; border-bottom: 1px solid var(--line);
+      letter-spacing: 0.04em;
+    }
+    .aside-logo em { color: var(--em); font-style: normal; }
+    .aside-logo span { display: block; font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faint); margin-top: 4px; }
+    .aside-nav { padding: 20px 12px; flex: 1; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 3px; cursor: pointer;
+      font-size: 13px; font-weight: 400; color: var(--ink-dim);
+      transition: background .15s, color .15s; user-select: none;
+      margin-bottom: 2px;
+    }
+    .nav-item:hover { background: rgba(255,255,255,.04); color: var(--ink); }
+    .nav-item.active { background: rgba(200,240,104,.07); color: var(--em); }
+    .nav-item .ni { font-size: 14px; width: 18px; text-align: center; }
+    .aside-footer {
+      padding: 16px 24px; border-top: 1px solid var(--line);
+    }
+    .logout-btn {
+      width: 100%; background: none; border: 1px solid var(--line);
+      border-radius: 2px; color: var(--ink-dim); font-family: 'Outfit', sans-serif;
+      font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 9px; cursor: pointer; transition: border-color .2s, color .2s;
+    }
+    .logout-btn:hover { border-color: var(--red); color: var(--red); }
+
+    /* MAIN */
+    main { padding: 40px 40px 80px; overflow-x: hidden; }
+    @media(max-width: 720px) { main { padding: 24px 20px 60px; } }
+
+    /* TOP BAR */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 40px; flex-wrap: wrap; gap: 16px;
+    }
+    .page-title { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; color: var(--ink); }
+    .page-title em { font-style: italic; color: var(--em); }
+    .topbar-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .action-btn {
+      background: none; border: 1px solid var(--line); border-radius: 2px;
+      color: var(--ink-dim); font-family: 'Outfit', sans-serif;
+      font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 9px 18px; cursor: pointer; transition: all .2s;
+    }
+    .action-btn:hover { border-color: var(--green); color: var(--ink); }
+    .action-btn.primary { background: var(--em); border-color: var(--em); color: #000; }
+    .action-btn.primary:hover { opacity: .85; }
+
+    /* STAT CARDS */
+    .stat-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1px; background: var(--line); border: 1px solid var(--line);
+      border-radius: 4px; overflow: hidden; margin-bottom: 32px;
+    }
+    @media(max-width: 900px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media(max-width: 500px) { .stat-grid { grid-template-columns: 1fr; } }
+    .stat-card { background: var(--card); padding: 28px 24px; }
+    .stat-val {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 44px; font-weight: 300; line-height: 1;
+      letter-spacing: -0.02em; margin-bottom: 6px;
+    }
+    .stat-val.green { color: var(--em); }
+    .stat-val.dim   { color: var(--ink); }
+    .stat-lbl { font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faint); }
+    .stat-delta { font-size: 12px; font-weight: 400; color: var(--em2); margin-top: 6px; }
+
+    /* FILTER BAR */
+    .filter-bar {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .filter-chip {
+      background: none; border: 1px solid var(--line); border-radius: 100px;
+      color: var(--ink-dim); font-family: 'Outfit', sans-serif;
+      font-size: 12px; font-weight: 500; letter-spacing: 0.06em;
+      padding: 7px 16px; cursor: pointer; transition: all .15s; white-space: nowrap;
+    }
+    .filter-chip:hover { border-color: var(--ink-dim); color: var(--ink); }
+    .filter-chip.active { background: rgba(200,240,104,.1); border-color: var(--em); color: var(--em); }
+    .search-box {
+      background: var(--card); border: 1px solid var(--line); border-radius: 2px;
+      color: var(--ink); font-family: 'Outfit', sans-serif;
+      font-size: 13px; font-weight: 300; padding: 8px 14px; outline: none;
+      transition: border-color .15s; width: 200px;
+    }
+    .search-box:focus { border-color: var(--green); }
+    .search-box::placeholder { color: var(--ink-faint); }
+
+    /* TABLE */
+    .table-wrap { overflow-x: auto; }
+    .app-table { width: 100%; border-collapse: collapse; }
+    .app-table th {
+      text-align: left; padding: 10px 16px;
+      font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--ink-faint); border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+    }
+    .app-table td {
+      padding: 14px 16px; border-bottom: 1px solid var(--line);
+      font-size: 13.5px; font-weight: 300; color: var(--ink-dim);
+      vertical-align: middle;
+    }
+    .app-table tr:hover td { background: rgba(255,255,255,.02); color: var(--ink); }
+    .td-name { font-weight: 500; color: var(--ink) !important; }
+    .td-date { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 13px; white-space: nowrap; }
+    .td-earn { font-family: 'Cormorant Garamond', serif; font-size: 16px; color: var(--em) !important; font-weight: 300; }
+
+    /* STATUS BADGE */
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      border-radius: 100px; font-size: 11px; font-weight: 500;
+      letter-spacing: 0.06em; padding: 4px 12px; white-space: nowrap;
+      cursor: pointer; border: none; font-family: 'Outfit', sans-serif;
+      transition: opacity .15s;
+    }
+    .status-badge:hover { opacity: .8; }
+    .status-badge .dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+    .s-neu      { background: rgba(200,240,104,.1); color: var(--em); }
+    .s-neu .dot { background: var(--em); }
+    .s-kontakt      { background: rgba(95,212,160,.1); color: var(--em2); }
+    .s-kontakt .dot { background: var(--em2); }
+    .s-absage      { background: rgba(224,85,85,.1); color: var(--red); }
+    .s-absage .dot { background: var(--red); }
+    .s-angestellt      { background: rgba(42,157,104,.15); color: #4dffaa; }
+    .s-angestellt .dot { background: #4dffaa; }
+
+    /* DETAIL DRAWER */
+    .drawer-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.6);
+      z-index: 300; display: none; backdrop-filter: blur(4px);
+    }
+    .drawer {
+      position: fixed; top: 0; right: 0; bottom: 0; width: 380px;
+      background: var(--surface); border-left: 1px solid var(--line);
+      z-index: 301; padding: 36px 32px; overflow-y: auto;
+      transform: translateX(100%); transition: transform .3s ease;
+    }
+    @media(max-width: 500px) { .drawer { width: 100%; } }
+    .drawer.open { transform: translateX(0); }
+    .drawer-overlay.open { display: block; }
+    .drawer-close {
+      position: absolute; top: 20px; right: 24px;
+      background: none; border: none; color: var(--ink-dim);
+      font-size: 20px; cursor: pointer; transition: color .15s; line-height: 1;
+    }
+    .drawer-close:hover { color: var(--ink); }
+    .drawer-name { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: var(--ink); margin-bottom: 4px; }
+    .drawer-date { font-size: 12px; color: var(--ink-faint); margin-bottom: 24px; }
+    .drawer-divider { height: 1px; background: var(--line); margin: 20px 0; }
+    .drawer-field { margin-bottom: 16px; }
+    .drawer-field-lbl { font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 4px; }
+    .drawer-field-val { font-size: 14px; font-weight: 300; color: var(--ink-dim); line-height: 1.6; }
+    .drawer-field-val a { color: var(--em2); text-decoration: none; }
+    .drawer-status-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+    .status-option {
+      border-radius: 100px; font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
+      padding: 6px 14px; cursor: pointer; border: 1px solid transparent;
+      font-family: 'Outfit', sans-serif; transition: all .15s;
+    }
+    .status-option:hover { opacity: .75; }
+    .status-option.selected { border-color: currentColor; }
+    .so-neu       { background: rgba(200,240,104,.1); color: var(--em); }
+    .so-kontakt   { background: rgba(95,212,160,.1); color: var(--em2); }
+    .so-absage    { background: rgba(224,85,85,.1); color: var(--red); }
+    .so-angestellt{ background: rgba(42,157,104,.15); color: #4dffaa; }
+    .drawer-note-area {
+      width: 100%; background: var(--card); border: 1px solid var(--line);
+      border-radius: 2px; color: var(--ink); font-family: 'Outfit', sans-serif;
+      font-size: 13px; font-weight: 300; padding: 12px 14px; outline: none;
+      resize: vertical; min-height: 80px; transition: border-color .15s;
+    }
+    .drawer-note-area:focus { border-color: var(--green); }
+    .drawer-note-area::placeholder { color: var(--ink-faint); }
+    .drawer-save-btn {
+      width: 100%; background: var(--em); color: #000; border: none;
+      border-radius: 2px; font-family: 'Outfit', sans-serif; font-size: 11px;
+      font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+      padding: 13px; cursor: pointer; margin-top: 20px; transition: opacity .15s;
+    }
+    .drawer-save-btn:hover { opacity: .85; }
+    .drawer-delete-btn {
+      width: 100%; background: none; border: 1px solid rgba(224,85,85,.3);
+      border-radius: 2px; color: var(--red); font-family: 'Outfit', sans-serif;
+      font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 11px; cursor: pointer; margin-top: 8px; transition: all .15s;
+    }
+    .drawer-delete-btn:hover { background: rgba(224,85,85,.08); }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center; padding: 80px 20px;
+      border: 1px dashed var(--line); border-radius: 4px;
+    }
+    .empty-icon { font-size: 40px; margin-bottom: 16px; opacity: .3; }
+    .empty-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; font-style: italic; color: var(--ink-dim); margin-bottom: 8px; }
+    .empty-sub { font-size: 13px; color: var(--ink-faint); }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 32px; right: 32px; z-index: 400;
+      background: var(--card); border: 1px solid var(--green);
+      border-radius: 3px; padding: 14px 20px;
+      font-size: 13px; font-weight: 400; color: var(--em2);
+      transform: translateY(20px); opacity: 0;
+      transition: transform .3s ease, opacity .3s ease;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* MOBILE NAV */
+    .mobile-nav {
+      display: none; background: var(--surface); border-bottom: 1px solid var(--line);
+      padding: 14px 20px; align-items: center; justify-content: space-between;
+    }
+    @media(max-width: 720px) { .mobile-nav { display: flex; } }
+    .mobile-logo { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; color: var(--ink); }
+    .mobile-logo em { color: var(--em); font-style: normal; }
+
+    /* CHART */
+    .chart-section { margin-bottom: 32px; }
+    .chart-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 16px; }
+    .chart-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 300; color: var(--ink); }
+    .chart-sub { font-size: 11px; color: var(--ink-faint); }
+    .mini-chart {
+      display: flex; align-items: flex-end; gap: 6px;
+      height: 60px; background: var(--card); border: 1px solid var(--line);
+      border-radius: 4px; padding: 12px 16px;
+    }
+    .bar-col { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+    .bar {
+      width: 100%; border-radius: 2px 2px 0 0;
+      background: rgba(200,240,104,.25);
+      transition: background .2s; cursor: default; min-height: 2px;
+    }
+    .bar:hover { background: rgba(200,240,104,.5); }
+    .bar-lbl { font-size: 9px; color: var(--ink-faint); letter-spacing: 0.08em; white-space: nowrap; }
+  </style>
+</head>
+<body>
+
+<div class="ambient a1"></div>
+
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">Enpal <em>×</em> Admin</div>
+    <div class="login-sub">Bewerbungs-Panel</div>
+    <label class="login-label">Passwort</label>
+    <input type="password" class="login-input" id="loginPw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Anmelden →</button>
+    <div class="login-error" id="loginErr">Falsches Passwort</div>
+  </div>
+</div>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav">
+  <div class="mobile-logo">Enpal <em>×</em> Admin</div>
+  <button class="action-btn" onclick="logout()">Abmelden</button>
+</div>
+
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <aside>
+    <div class="aside-logo">
+      Enpal <em>×</em> Admin
+      <span>Bewerbungs-Panel</span>
+    </div>
+    <nav class="aside-nav">
+      <div class="nav-item active" onclick="setView('applications')">
+        <span class="ni">◈</span> Bewerbungen
+      </div>
+      <div class="nav-item" onclick="setView('stats')">
+        <span class="ni">◉</span> Statistiken
+      </div>
+    </nav>
+    <div class="aside-footer">
+      <a href="index.html" style="display:block;text-align:center;font-size:11px;color:var(--ink-faint);text-decoration:none;margin-bottom:10px;letter-spacing:.1em;text-transform:uppercase;">← Ana Menü</a><button class="logout-btn" onclick="logout()">Abmelden</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- APPLICATIONS VIEW -->
+    <div id="view-applications">
+      <div class="topbar">
+        <div class="page-title">Bewerbungen <em id="app-count-title"></em></div>
+        <div class="topbar-actions">
+          <button class="action-btn" onclick="addDemoData()">Demo-Daten</button>
+          <button class="action-btn primary" onclick="exportCSV()">Export CSV →</button>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-val green" id="s-total">0</div>
+          <div class="stat-lbl">Gesamt</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val dim" id="s-new">0</div>
+          <div class="stat-lbl">Neu (unbearbeitet)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val dim" id="s-week">0</div>
+          <div class="stat-lbl">Diese Woche</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val dim" id="s-hired">0</div>
+          <div class="stat-lbl">Angestellt</div>
+        </div>
+      </div>
+
+      <div class="filter-bar">
+        <button class="filter-chip active" onclick="setFilter('alle', this)">Alle</button>
+        <button class="filter-chip" onclick="setFilter('neu', this)">Neu</button>
+        <button class="filter-chip" onclick="setFilter('kontakt', this)">Kontaktiert</button>
+        <button class="filter-chip" onclick="setFilter('angestellt', this)">Angestellt</button>
+        <button class="filter-chip" onclick="setFilter('absage', this)">Absage</button>
+        <input type="text" class="search-box" id="search-box" placeholder="Suchen…" oninput="renderTable()">
+      </div>
+
+      <div class="table-wrap">
+        <table class="app-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Ort</th>
+              <th>Verfügbarkeit</th>
+              <th>Datum</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="app-tbody"></tbody>
+        </table>
+      </div>
+
+      <div id="empty-state" class="empty-state" style="display:none;">
+        <div class="empty-icon">◈</div>
+        <div class="empty-title">Keine Bewerbungen gefunden</div>
+        <p class="empty-sub">Klicke auf "Demo-Daten" um Testeinträge zu laden.</p>
+      </div>
+    </div>
+
+    <!-- STATS VIEW -->
+    <div id="view-stats" style="display:none;">
+      <div class="topbar">
+        <div class="page-title">Statistiken</div>
+      </div>
+
+      <div class="stat-grid" style="margin-bottom:32px;">
+        <div class="stat-card">
+          <div class="stat-val green" id="st-total">0</div>
+          <div class="stat-lbl">Gesamt</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val dim" id="st-conv">0%</div>
+          <div class="stat-lbl">Einstellungsrate</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val dim" id="st-week">0</div>
+          <div class="stat-lbl">Ø pro Woche</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val dim" id="st-resp">0%</div>
+          <div class="stat-lbl">Bearbeitet</div>
+        </div>
+      </div>
+
+      <div class="chart-section">
+        <div class="chart-header">
+          <div class="chart-title">Bewerbungen nach Tag</div>
+          <div class="chart-sub">Letzte 7 Tage</div>
+        </div>
+        <div class="mini-chart" id="mini-chart"></div>
+      </div>
+
+      <div class="chart-section">
+        <div class="chart-header">
+          <div class="chart-title">Verfügbarkeit</div>
+        </div>
+        <div id="avail-chart" style="display:flex;flex-direction:column;gap:10px;"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  <div class="drawer-name" id="d-name">—</div>
+  <div class="drawer-date" id="d-date">—</div>
+
+  <div class="drawer-divider"></div>
+
+  <div class="drawer-field">
+    <div class="drawer-field-lbl">Telefon</div>
+    <div class="drawer-field-val" id="d-tel">—</div>
+  </div>
+  <div class="drawer-field">
+    <div class="drawer-field-lbl">Wohnort</div>
+    <div class="drawer-field-val" id="d-ort">—</div>
+  </div>
+  <div class="drawer-field">
+    <div class="drawer-field-lbl">Verfügbarkeit</div>
+    <div class="drawer-field-val" id="d-time">—</div>
+  </div>
+  <div class="drawer-field" id="d-why-wrap">
+    <div class="drawer-field-lbl">Motivationstext</div>
+    <div class="drawer-field-val" id="d-why">—</div>
+  </div>
+
+  <div class="drawer-divider"></div>
+
+  <div class="drawer-field">
+    <div class="drawer-field-lbl">Status</div>
+    <div class="drawer-status-row">
+      <button class="status-option so-neu"        onclick="setDrawerStatus('neu')"       >Neu</button>
+      <button class="status-option so-kontakt"    onclick="setDrawerStatus('kontakt')"   >Kontaktiert</button>
+      <button class="status-option so-angestellt" onclick="setDrawerStatus('angestellt')">Angestellt</button>
+      <button class="status-option so-absage"     onclick="setDrawerStatus('absage')"    >Absage</button>
+    </div>
+  </div>
+
+  <div class="drawer-field" style="margin-top:16px;">
+    <div class="drawer-field-lbl">Notiz</div>
+    <textarea class="drawer-note-area" id="d-note" placeholder="Interne Notiz…"></textarea>
+  </div>
+
+  <button class="drawer-save-btn" onclick="saveDrawer()">Speichern →</button>
+  <button class="drawer-delete-btn" onclick="deleteEntry()">Eintrag löschen</button>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">Gespeichert ✓</div>
+
+<script>
+  // ── AUTH ──
+  const PW = 'enpal2025';
+  function doLogin() {
+    if (document.getElementById('loginPw').value === PW) {
+      document.getElementById('loginScreen').style.display = 'none';
+      init();
+    } else {
+      document.getElementById('loginErr').style.display = 'block';
+    }
+  }
+  function logout() {
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('loginPw').value = '';
+  }
+  // auto-login if already done this session
+  if (sessionStorage.getItem('enpal_admin')) {
+    document.getElementById('loginScreen').style.display = 'none';
+    setTimeout(init, 0);
+  }
+
+  // ── DATA ──
+  function getApps() { return JSON.parse(localStorage.getItem('enpal_applications') || '[]'); }
+  function saveApps(arr) { localStorage.setItem('enpal_applications', JSON.stringify(arr)); }
+
+  let currentFilter = 'alle';
+  let currentId = null;
+
+  function init() {
+    sessionStorage.setItem('enpal_admin', '1');
+    renderTable();
+    renderStats();
+  }
+
+  // ── VIEW SWITCHING ──
+  function setView(v) {
+    document.getElementById('view-applications').style.display = v === 'applications' ? 'block' : 'none';
+    document.getElementById('view-stats').style.display = v === 'stats' ? 'block' : 'none';
+    document.querySelectorAll('.nav-item').forEach((el, i) => {
+      el.classList.toggle('active', (v === 'applications' && i === 0) || (v === 'stats' && i === 1));
+    });
+    if (v === 'stats') renderStats();
+  }
+
+  // ── FILTER ──
+  function setFilter(f, el) {
+    currentFilter = f;
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    renderTable();
+  }
+
+  // ── TABLE ──
+  function renderTable() {
+    const apps = getApps();
+    const search = document.getElementById('search-box').value.toLowerCase();
+    let filtered = apps.filter(a => {
+      const matchF = currentFilter === 'alle' || a.status === currentFilter;
+      const matchS = !search || a.name.toLowerCase().includes(search) || (a.ort||'').toLowerCase().includes(search) || (a.tel||'').includes(search);
+      return matchF && matchS;
+    });
+
+    document.getElementById('app-count-title').textContent = filtered.length ? `(${filtered.length})` : '';
+
+    // Stats
+    const now = new Date();
+    const weekAgo = new Date(now - 7*24*60*60*1000);
+    document.getElementById('s-total').textContent = apps.length;
+    document.getElementById('s-new').textContent = apps.filter(a => a.status === 'neu').length;
+    document.getElementById('s-week').textContent = apps.filter(a => new Date(a.date) >= weekAgo).length;
+    document.getElementById('s-hired').textContent = apps.filter(a => a.status === 'angestellt').length;
+
+    const tbody = document.getElementById('app-tbody');
+    const empty = document.getElementById('empty-state');
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    tbody.innerHTML = filtered.map(a => {
+      const d = new Date(a.date);
+      const dateStr = d.toLocaleDateString('de-DE', { day: '2-digit', month: 'short' });
+      const statusMap = {neu:'Neu',kontakt:'Kontaktiert',absage:'Absage',angestellt:'Angestellt'};
+      return `
+        <tr style="cursor:pointer;" onclick="openDrawer(${a.id})">
+          <td class="td-name">${esc(a.name)}</td>
+          <td>${esc(a.ort||'—')}</td>
+          <td>${esc(shortAvail(a.time))}</td>
+          <td class="td-date">${dateStr}</td>
+          <td>
+            <button class="status-badge s-${a.status||'neu'}" onclick="event.stopPropagation();cycleStatus(${a.id})">
+              <span class="dot"></span>${statusMap[a.status||'neu']||'Neu'}
+            </button>
+          </td>
+        </tr>`;
+    }).join('');
+  }
+
+  function shortAvail(t) {
+    if (!t) return '—';
+    if (t.includes('Teilzeit')) return 'Teilzeit';
+    if (t.includes('Halbzeit')) return 'Halbzeit';
+    if (t.includes('Vollzeit')) return 'Vollzeit';
+    return t;
+  }
+
+  function cycleStatus(id) {
+    const apps = getApps();
+    const idx = apps.findIndex(a => a.id === id);
+    if (idx === -1) return;
+    const order = ['neu','kontakt','angestellt','absage'];
+    const cur = apps[idx].status || 'neu';
+    apps[idx].status = order[(order.indexOf(cur)+1) % order.length];
+    saveApps(apps);
+    renderTable();
+    showToast('Status aktualisiert');
+  }
+
+  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  // ── DRAWER ──
+  function openDrawer(id) {
+    const apps = getApps();
+    const a = apps.find(x => x.id === id);
+    if (!a) return;
+    currentId = id;
+    document.getElementById('d-name').textContent = a.name;
+    document.getElementById('d-date').textContent = new Date(a.date).toLocaleString('de-DE');
+    document.getElementById('d-tel').innerHTML = `<a href="tel:${a.tel}">${esc(a.tel)}</a>`;
+    document.getElementById('d-ort').textContent = a.ort || '—';
+    document.getElementById('d-time').textContent = a.time || '—';
+    const why = document.getElementById('d-why');
+    const whyWrap = document.getElementById('d-why-wrap');
+    if (a.why) { why.textContent = a.why; whyWrap.style.display = 'block'; }
+    else { whyWrap.style.display = 'none'; }
+    document.getElementById('d-note').value = a.note || '';
+    // highlight status
+    document.querySelectorAll('.status-option').forEach(btn => {
+      btn.classList.toggle('selected', btn.classList.contains('so-'+(a.status||'neu')));
+    });
+    document.getElementById('drawerOverlay').classList.add('open');
+    document.getElementById('drawer').classList.add('open');
+  }
+
+  function closeDrawer() {
+    document.getElementById('drawerOverlay').classList.remove('open');
+    document.getElementById('drawer').classList.remove('open');
+    currentId = null;
+  }
+
+  function setDrawerStatus(s) {
+    document.querySelectorAll('.status-option').forEach(btn => {
+      btn.classList.toggle('selected', btn.classList.contains('so-'+s));
+    });
+    const apps = getApps();
+    const idx = apps.findIndex(a => a.id === currentId);
+    if (idx === -1) return;
+    apps[idx].status = s;
+    saveApps(apps);
+    renderTable();
+  }
+
+  function saveDrawer() {
+    const apps = getApps();
+    const idx = apps.findIndex(a => a.id === currentId);
+    if (idx === -1) return;
+    apps[idx].note = document.getElementById('d-note').value;
+    saveApps(apps);
+    renderTable();
+    showToast('Notiz gespeichert ✓');
+  }
+
+  function deleteEntry() {
+    if (!confirm('Eintrag wirklich löschen?')) return;
+    const apps = getApps().filter(a => a.id !== currentId);
+    saveApps(apps);
+    closeDrawer();
+    renderTable();
+    showToast('Eintrag gelöscht');
+  }
+
+  // ── STATS ──
+  function renderStats() {
+    const apps = getApps();
+    const now = new Date();
+    const hired = apps.filter(a => a.status === 'angestellt').length;
+    const conv = apps.length ? Math.round(hired / apps.length * 100) : 0;
+    const oldest = apps.length ? new Date(Math.min(...apps.map(a => new Date(a.date)))) : now;
+    const weeks = Math.max(1, Math.ceil((now - oldest) / (7*24*60*60*1000)));
+    const processed = apps.filter(a => a.status !== 'neu').length;
+    const respRate = apps.length ? Math.round(processed / apps.length * 100) : 0;
+
+    document.getElementById('st-total').textContent = apps.length;
+    document.getElementById('st-conv').textContent = conv + '%';
+    document.getElementById('st-week').textContent = (apps.length / weeks).toFixed(1);
+    document.getElementById('st-resp').textContent = respRate + '%';
+
+    // Mini bar chart — last 7 days
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now); d.setDate(d.getDate() - i);
+      const key = d.toDateString();
+      const count = apps.filter(a => new Date(a.date).toDateString() === key).length;
+      const lbl = d.toLocaleDateString('de-DE', { weekday: 'short' }).slice(0,2);
+      days.push({ lbl, count });
+    }
+    const maxD = Math.max(...days.map(d => d.count), 1);
+    document.getElementById('mini-chart').innerHTML = days.map(d => `
+      <div class="bar-col" style="height:100%;">
+        <div class="bar" style="height:${Math.max(4, Math.round(d.count/maxD*40))}px;" title="${d.count} Bewerbungen"></div>
+        <div class="bar-lbl">${d.lbl}</div>
+      </div>`).join('');
+
+    // Availability breakdown
+    const avails = ['Teilzeit','Halbzeit','Vollzeit'];
+    const availData = avails.map(k => ({
+      k, v: apps.filter(a => (a.time||'').includes(k.includes('Voll') ? 'Vollzeit' : k)).length
+    }));
+    const maxA = Math.max(...availData.map(x => x.v), 1);
+    document.getElementById('avail-chart').innerHTML = availData.map(({k,v}) => `
+      <div style="display:flex;align-items:center;gap:16px;">
+        <div style="font-size:12px;color:var(--ink-dim);width:70px;flex-shrink:0;">${k}</div>
+        <div style="flex:1;background:var(--card);border-radius:2px;height:6px;overflow:hidden;">
+          <div style="width:${Math.round(v/maxA*100)}%;height:100%;background:rgba(200,240,104,.4);border-radius:2px;transition:width .4s;"></div>
+        </div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--em);min-width:20px;">${v}</div>
+      </div>`).join('');
+  }
+
+  // ── EXPORT ──
+  function exportCSV() {
+    const apps = getApps();
+    if (!apps.length) { showToast('Keine Daten vorhanden'); return; }
+    const header = 'Name,Telefon,Ort,Verfügbarkeit,Status,Datum,Notiz';
+    const rows = apps.map(a =>
+      [a.name, a.tel, a.ort||'', a.time||'', a.status||'neu',
+       new Date(a.date).toLocaleDateString('de-DE'), a.note||'']
+      .map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')
+    );
+    const csv = [header, ...rows].join('\n');
+    const blob = new Blob(['\ufeff'+csv], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url;
+    a.download = 'enpal-bewerbungen.csv'; a.click();
+    URL.revokeObjectURL(url);
+    showToast('CSV exportiert ✓');
+  }
+
+  // ── DEMO DATA ──
+  function addDemoData() {
+    const names = ['Mehmet Kaya','Sandra Hoffmann','Luca Ricci','Jana Schulz','Arjun Patel','Kim Müller','David Osei','Fatima Al-Hassan'];
+    const orte  = ['Köln','Düsseldorf','Bonn','Leverkusen','Köln','Aachen','Düsseldorf','Köln'];
+    const times = ['Teilzeit (2–3 Tage / Woche)','Halbzeit (3–4 Tage / Woche)','Fast Vollzeit (5+ Tage / Woche)'];
+    const stati = ['neu','neu','kontakt','angestellt','neu','absage','kontakt','neu'];
+    const existing = getApps();
+    const demo = names.map((name,i) => ({
+      id: Date.now() + i * 13,
+      name, tel: '+49 17' + Math.floor(Math.random()*99999999).toString().padStart(8,'0'),
+      ort: orte[i], time: times[i % 3],
+      why: i % 2 === 0 ? 'Ich bin kommunikativ und suche eine flexible Einnahmequelle.' : '',
+      date: new Date(Date.now() - i * 1.2 * 24*60*60*1000).toISOString(),
+      status: stati[i], note: ''
+    }));
+    saveApps([...demo, ...existing]);
+    renderTable();
+    showToast('Demo-Daten geladen ✓');
+  }
+
+  // ── TOAST ──
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+</script>
+</body>
+</html>

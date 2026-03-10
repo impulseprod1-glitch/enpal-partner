@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Enpal Partner — Ana Menü</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:    #060908;
+      --s1:    #0c1014;
+      --s2:    #111820;
+      --line:  rgba(255,255,255,0.07);
+      --ink:   #e8f0eb;
+      --dim:   #6a8878;
+      --faint: #1e3028;
+      --em:    #c8f068;
+      --green: #2fcf82;
+      --blue:  #4ab8f0;
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--bg); color: var(--ink);
+      font-family: 'Outfit', sans-serif; font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* grain */
+    body::after {
+      content: ''; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999;
+    }
+
+    /* ambient */
+    .amb { position: fixed; border-radius: 50%; filter: blur(130px); pointer-events: none; z-index: 0; }
+    .a1  { width: 500px; height: 500px; background: #0a2e18; top: -200px; left: -100px; opacity: .5; }
+    .a2  { width: 350px; height: 350px; background: #080f20; bottom: 0; right: -80px; opacity: .4; }
+
+    .wrap {
+      max-width: 480px; margin: 0 auto;
+      padding: 60px 24px 80px;
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+
+    /* HEADER */
+    .hd { margin-bottom: 52px; }
+    .hd-eyebrow {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--dim); margin-bottom: 18px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .live-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--green);
+      animation: glow 2.4s infinite;
+    }
+    @keyframes glow {
+      0%,100% { box-shadow: 0 0 0 0 rgba(47,207,130,.5); }
+      50%      { box-shadow: 0 0 0 5px rgba(47,207,130,0); }
+    }
+    .hd-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 44px; font-weight: 300; line-height: 1.05;
+      letter-spacing: -0.01em; margin-bottom: 12px;
+    }
+    .hd-title em { font-style: italic; color: var(--em); }
+    .hd-sub { font-size: 14px; font-weight: 300; color: var(--dim); line-height: 1.7; }
+
+    /* CARDS */
+    .cards { display: flex; flex-direction: column; gap: 12px; flex: 1; }
+
+    .card {
+      display: flex; align-items: stretch;
+      background: var(--s1); border: 1px solid var(--line);
+      border-radius: 16px; overflow: hidden;
+      text-decoration: none; color: inherit;
+      transition: border-color .2s, transform .15s;
+      position: relative;
+    }
+    .card:hover  { border-color: rgba(255,255,255,.14); transform: translateY(-2px); }
+    .card:active { transform: scale(.98); }
+
+    .card-accent {
+      width: 4px; flex-shrink: 0;
+    }
+    .card-body {
+      padding: 24px 22px; flex: 1;
+    }
+    .card-top {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .card-tag {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      padding: 4px 10px; border-radius: 100px;
+    }
+    .card-arrow { font-size: 18px; color: var(--dim); }
+    .card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 600;
+      color: var(--ink); margin-bottom: 5px;
+    }
+    .card-desc {
+      font-size: 13px; font-weight: 300;
+      color: var(--dim); line-height: 1.6; margin-bottom: 14px;
+    }
+    .card-pills {
+      display: flex; gap: 6px; flex-wrap: wrap;
+    }
+    .pill {
+      font-size: 11px; font-weight: 400;
+      background: rgba(255,255,255,.04); border: 1px solid var(--line);
+      border-radius: 100px; padding: 3px 10px; color: var(--dim);
+    }
+
+    /* card variants */
+    .card-landing .card-accent { background: linear-gradient(180deg, var(--em), #8ab820); }
+    .card-landing .card-tag    { background: rgba(200,240,104,.1); color: var(--em); }
+
+    .card-admin .card-accent { background: linear-gradient(180deg, var(--blue), #1a6fa8); }
+    .card-admin .card-tag    { background: rgba(74,184,240,.1); color: var(--blue); }
+
+    .card-saha .card-accent { background: linear-gradient(180deg, var(--green), #1a8a50); }
+    .card-saha .card-tag    { background: rgba(47,207,130,.1); color: var(--green); }
+
+    /* STATS MINI */
+    .stats-mini {
+      background: var(--s1); border: 1px solid var(--line);
+      border-radius: 12px; padding: 16px 20px;
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 0; margin-top: 16px;
+    }
+    .sm-cell { text-align: center; }
+    .sm-cell + .sm-cell { border-left: 1px solid var(--line); }
+    .sm-val {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px; font-weight: 300;
+      color: var(--em); line-height: 1; margin-bottom: 3px;
+    }
+    .sm-lbl { font-size: 9px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+
+    /* FOOTER */
+    .foot {
+      margin-top: 32px; padding-top: 20px;
+      border-top: 1px solid var(--line);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .foot-txt { font-size: 11px; color: var(--faint); }
+    .foot-ver {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px; color: var(--faint); font-style: italic;
+    }
+
+    /* GUIDE TOOLTIP */
+    .guide {
+      background: linear-gradient(135deg, #0c1a0f, #080f14);
+      border: 1px solid var(--line); border-radius: 12px;
+      padding: 16px 18px; margin-bottom: 20px;
+      font-size: 13px; font-weight: 300; color: var(--dim);
+      line-height: 1.7; display: none;
+    }
+    .guide.show { display: block; }
+    .guide strong { color: var(--ink); font-weight: 500; }
+    .guide-btn {
+      background: none; border: 1px solid var(--line);
+      border-radius: 100px; color: var(--dim);
+      font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 7px 16px; cursor: pointer; margin-bottom: 12px;
+      transition: border-color .2s, color .2s;
+    }
+    .guide-btn:hover { border-color: var(--green); color: var(--green); }
+  </style>
+</head>
+<body>
+<div class="amb a1"></div>
+<div class="amb a2"></div>
+
+<div class="wrap">
+
+  <div class="hd">
+    <div class="hd-eyebrow"><div class="live-dot"></div>Enpal Partner Araçları</div>
+    <div class="hd-title">Hoş geldin,<br><em>buradan başla.</em></div>
+    <p class="hd-sub">3 araç, tek ekosistem. Her şey birbirine bağlı — saha, yönetim ve iş ilanı.</p>
+  </div>
+
+  <button class="guide-btn" onclick="toggleGuide()">? Nasıl kullanılır</button>
+  <div class="guide" id="guide">
+    <strong>Akış şöyle çalışıyor:</strong><br>
+    1. <strong>İş İlanı</strong> → arkadaşların buradan başvuruyor<br>
+    2. <strong>Admin Paneli</strong> → gelen başvuruları görüp yönetiyorsun (şifre: <code style="color:var(--em)">enpal2025</code>)<br>
+    3. <strong>Saha Uygulaması</strong> → sahaya çıkınca telefonda kullanıyorsun — kapı kayıt et, lead onayla<br><br>
+    Saha'da onaylanan leadler otomatik Admin'e düşüyor.
+  </div>
+
+  <div class="cards">
+
+    <a href="enpal-saha.html" class="card card-saha">
+      <div class="card-accent"></div>
+      <div class="card-body">
+        <div class="card-top">
+          <div class="card-tag">📍 Saha</div>
+          <div class="card-arrow">→</div>
+        </div>
+        <div class="card-title">Saha Uygulaması</div>
+        <div class="card-desc">Kapı kapı gezerken telefonda kullan. Vardiya başlat, kapı sonuçlarını kaydet, lead onayla.</div>
+        <div class="card-pills">
+          <span class="pill">Vardiya Takibi</span>
+          <span class="pill">Canlı Kazanç</span>
+          <span class="pill">Lead Formu</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="enpal-admin.html" class="card card-admin">
+      <div class="card-accent"></div>
+      <div class="card-body">
+        <div class="card-top">
+          <div class="card-tag">🔐 Admin</div>
+          <div class="card-arrow">→</div>
+        </div>
+        <div class="card-title">Admin Paneli</div>
+        <div class="card-desc">Gelen başvuruları takip et, durumlarını güncelle, CSV export al. Şifre: enpal2025</div>
+        <div class="card-pills">
+          <span class="pill">Başvuru Takibi</span>
+          <span class="pill">Status Yönetimi</span>
+          <span class="pill">CSV Export</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="enpal-job-listing.html" class="card card-landing">
+      <div class="card-accent"></div>
+      <div class="card-body">
+        <div class="card-top">
+          <div class="card-tag">📄 İlan</div>
+          <div class="card-arrow">→</div>
+        </div>
+        <div class="card-title">İş İlanı Sayfası</div>
+        <div class="card-desc">Arkadaşlarına gönder. Başvuru formu doldurunca Admin Paneline düşüyor.</div>
+        <div class="card-pills">
+          <span class="pill">Başvuru Formu</span>
+          <span class="pill">Kazanç Hesaplayıcı</span>
+          <span class="pill">FAQ</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="stats-mini" id="stats-mini">
+    <div class="sm-cell">
+      <div class="sm-val" id="sm-apps">—</div>
+      <div class="sm-lbl">Başvuru</div>
+    </div>
+    <div class="sm-cell">
+      <div class="sm-val" id="sm-leads">—</div>
+      <div class="sm-lbl">Bugün Lead</div>
+    </div>
+    <div class="sm-cell">
+      <div class="sm-val" id="sm-earn">—</div>
+      <div class="sm-lbl">Bugün €</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span class="foot-txt">4 dosya · Aynı klasörde tutun</span>
+    <span class="foot-ver">v1.0</span>
+  </div>
+
+</div>
+
+<script>
+  function toggleGuide() {
+    const g = document.getElementById('guide');
+    g.classList.toggle('show');
+    document.querySelector('.guide-btn').textContent = g.classList.contains('show') ? '✕ Kapat' : '? Nasıl kullanılır';
+  }
+
+  // live stats from localStorage
+  function loadStats() {
+    try {
+      const apps  = JSON.parse(localStorage.getItem('enpal_applications') || '[]');
+      const log   = JSON.parse(localStorage.getItem('saha_log') || '[]');
+      const leads = log.filter(e => e.type === 'lead').length;
+      const earn  = leads * 50;
+      document.getElementById('sm-apps').textContent  = apps.length || '0';
+      document.getElementById('sm-leads').textContent = leads || '0';
+      document.getElementById('sm-earn').textContent  = earn ? earn + '€' : '0€';
+    } catch(e) {}
+  }
+  loadStats();
+</script>
+</body>
+</html>

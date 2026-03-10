@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <title>Enpal Saha</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    :root {
+      --bg:      #07090a;
+      --s1:      #0c1014;
+      --s2:      #111820;
+      --line:    rgba(255,255,255,0.07);
+      --ink:     #dde8f0;
+      --dim:     #607a8a;
+      --faint:   #243040;
+      --blue:    #4ab8f0;
+      --blue2:   #1a6fa8;
+      --em:      #c8f068;
+      --green:   #2fcf82;
+      --red:     #f05a5a;
+      --yellow:  #f0c44a;
+      --orange:  #f07a4a;
+    }
+
+    html, body {
+      height: 100%; overflow: hidden;
+      background: var(--bg); color: var(--ink);
+      font-family: 'Outfit', sans-serif; font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      user-select: none;
+    }
+
+    /* GRAIN */
+    body::after {
+      content: ''; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999;
+    }
+
+    /* APP SHELL */
+    #app {
+      height: 100vh; display: flex; flex-direction: column;
+      max-width: 430px; margin: 0 auto;
+      position: relative; overflow: hidden;
+    }
+
+    /* ── STATUS BAR ── */
+    .statusbar {
+      background: var(--s1);
+      border-bottom: 1px solid var(--line);
+      padding: 14px 20px 12px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .sb-left { display: flex; align-items: center; gap: 10px; }
+    .sb-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px; font-weight: 600; color: var(--ink);
+      letter-spacing: 0.03em;
+    }
+    .sb-logo em { color: var(--blue); font-style: normal; }
+    .shift-badge {
+      background: rgba(47,207,130,.12);
+      border: 1px solid rgba(47,207,130,.25);
+      border-radius: 100px;
+      font-size: 11px; font-weight: 600;
+      color: var(--green); padding: 3px 10px;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .shift-badge .sdot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--green); animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .shift-badge.off { background: rgba(255,255,255,.04); border-color: var(--line); color: var(--dim); }
+    .shift-badge.off .sdot { background: var(--dim); animation: none; }
+
+    .sb-timer {
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px; font-weight: 600; color: var(--blue);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── EARN BAR ── */
+    .earnbar {
+      background: linear-gradient(90deg, #0c1a0e, #091620);
+      border-bottom: 1px solid var(--line);
+      padding: 10px 20px;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 0; flex-shrink: 0;
+    }
+    .eb-cell { text-align: center; }
+    .eb-cell + .eb-cell { border-left: 1px solid var(--line); }
+    .eb-val {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 600; line-height: 1;
+      letter-spacing: -0.01em; margin-bottom: 2px;
+    }
+    .eb-val.em   { color: var(--em); }
+    .eb-val.blue { color: var(--blue); }
+    .eb-val.grn  { color: var(--green); }
+    .eb-val.dim  { color: var(--ink); }
+    .eb-lbl { font-size: 9px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
+
+    /* ── SCROLL AREA ── */
+    .scroll-area {
+      flex: 1; overflow-y: auto; overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      padding: 0 0 120px;
+    }
+    .scroll-area::-webkit-scrollbar { display: none; }
+
+    /* ── SECTION ── */
+    .section { padding: 20px 16px 0; }
+    .section-hd {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--dim); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-hd::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+
+    /* ── ADDRESS INPUT ── */
+    .addr-row {
+      display: flex; gap: 8px; align-items: stretch;
+      margin-bottom: 0;
+    }
+    .addr-input {
+      flex: 1; background: var(--s2); border: 1px solid var(--line);
+      border-radius: 10px; color: var(--ink);
+      font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 400;
+      padding: 13px 16px; outline: none;
+      transition: border-color .15s;
+      -webkit-appearance: none; user-select: text;
+    }
+    .addr-input:focus { border-color: var(--blue); }
+    .addr-input::placeholder { color: var(--faint); }
+    .addr-clear {
+      background: var(--s2); border: 1px solid var(--line);
+      border-radius: 10px; color: var(--dim);
+      font-size: 18px; padding: 0 16px; cursor: pointer;
+      transition: color .15s, background .15s;
+      display: flex; align-items: center;
+    }
+    .addr-clear:active { background: var(--s1); }
+
+    /* ── BIG ACTION BUTTONS ── */
+    .action-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px; padding: 16px 16px 0;
+    }
+    .act-btn {
+      border: none; border-radius: 14px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 6px; padding: 20px 12px;
+      cursor: pointer; transition: transform .12s, opacity .12s;
+      position: relative; overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .act-btn:active { transform: scale(0.95); opacity: .85; }
+    .act-btn::after {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background .1s;
+    }
+    .act-btn:active::after { background: rgba(255,255,255,.05); }
+
+    .act-icon { font-size: 28px; line-height: 1; }
+    .act-label { font-size: 13px; font-weight: 600; letter-spacing: 0.02em; }
+    .act-sub   { font-size: 10px; font-weight: 400; opacity: .7; }
+
+    .btn-noanswer { background: linear-gradient(135deg, #1a2030, #141a28); border: 1px solid rgba(96,122,138,.2); color: var(--dim); }
+    .btn-noanswer .act-label { color: #8aabcc; }
+    .btn-notint   { background: linear-gradient(135deg, #201818, #1a1212); border: 1px solid rgba(240,90,90,.15); color: var(--red); }
+    .btn-notint .act-label { color: var(--red); }
+    .btn-callback { background: linear-gradient(135deg, #201a08, #181408); border: 1px solid rgba(240,196,74,.2); color: var(--yellow); }
+    .btn-callback .act-label { color: var(--yellow); }
+    .btn-lead     { background: linear-gradient(135deg, #0c2018, #081810); border: 2px solid rgba(47,207,130,.35); color: var(--green); position: relative; }
+    .btn-lead .act-label { color: var(--em); font-size: 15px; }
+    .btn-lead::before { content: ''; position: absolute; inset: -1px; border-radius: 14px; background: linear-gradient(135deg, rgba(47,207,130,.1), transparent); pointer-events: none; }
+
+    /* ── QUICK NOTE ── */
+    .quick-note-row {
+      padding: 12px 16px 0;
+      display: flex; gap: 8px;
+    }
+    .quick-note {
+      flex: 1; background: var(--s2); border: 1px solid var(--line);
+      border-radius: 10px; color: var(--ink);
+      font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 300;
+      padding: 11px 14px; outline: none; resize: none; height: 44px;
+      transition: border-color .15s, height .2s;
+      -webkit-appearance: none; user-select: text;
+    }
+    .quick-note:focus { border-color: var(--blue); height: 80px; }
+    .quick-note::placeholder { color: var(--faint); }
+
+    /* ── SHIFT CONTROL ── */
+    .shift-ctrl { padding: 16px 16px 0; }
+    .shift-btn {
+      width: 100%; border: none; border-radius: 12px;
+      font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 16px; cursor: pointer;
+      transition: opacity .15s, transform .1s;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .shift-btn:active { transform: scale(0.98); }
+    .shift-btn.start { background: var(--green); color: #000; }
+    .shift-btn.end   { background: rgba(240,90,90,.15); border: 1px solid rgba(240,90,90,.3); color: var(--red); }
+
+    /* ── LOG ── */
+    .log-list {
+      padding: 0 16px;
+      display: flex; flex-direction: column; gap: 0;
+    }
+    .log-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 0; border-bottom: 1px solid var(--line);
+      animation: slideIn .25s ease;
+    }
+    @keyframes slideIn { from { opacity:0; transform: translateY(-8px); } to { opacity:1; transform: none; } }
+    .log-item:first-child { border-top: 1px solid var(--line); }
+    .log-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .log-addr { font-size: 13px; font-weight: 500; color: var(--ink); flex: 1; min-width: 0; }
+    .log-addr span { display: block; font-size: 11px; font-weight: 300; color: var(--dim); margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .log-type {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 3px 8px;
+      border-radius: 4px; flex-shrink: 0;
+    }
+    .log-time { font-size: 11px; color: var(--dim); flex-shrink: 0; font-family: 'Outfit'; }
+    .log-delete { background: none; border: none; color: var(--faint); font-size: 14px; cursor: pointer; padding: 4px; transition: color .15s; flex-shrink: 0; }
+    .log-delete:active { color: var(--red); }
+
+    .t-noanswer { background: rgba(96,122,138,.1); color: #8aabcc; }
+    .t-notint   { background: rgba(240,90,90,.1);  color: var(--red); }
+    .t-callback { background: rgba(240,196,74,.1); color: var(--yellow); }
+    .t-lead     { background: rgba(47,207,130,.15); color: var(--em); }
+    .d-noanswer { background: #607a8a; }
+    .d-notint   { background: var(--red); }
+    .d-callback { background: var(--yellow); }
+    .d-lead     { background: var(--green); }
+
+    /* ── SUMMARY OVERLAY ── */
+    .overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,.85); backdrop-filter: blur(8px);
+      display: none; align-items: flex-end; justify-content: center;
+    }
+    .overlay.open { display: flex; }
+    .summary-sheet {
+      background: var(--s1); border-radius: 20px 20px 0 0;
+      border-top: 1px solid var(--line);
+      width: 100%; max-width: 430px;
+      padding: 28px 24px 48px;
+      animation: slideUp .3s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(60px); opacity: 0; } to { transform: none; opacity: 1; } }
+    .sheet-handle { width: 36px; height: 4px; border-radius: 2px; background: var(--line); margin: 0 auto 24px; }
+    .sheet-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px; font-weight: 300; color: var(--ink);
+      margin-bottom: 4px;
+    }
+    .sheet-title em { color: var(--em); font-style: italic; }
+    .sheet-sub { font-size: 13px; color: var(--dim); margin-bottom: 28px; }
+
+    .summary-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px; margin-bottom: 24px;
+    }
+    .sum-card {
+      background: var(--s2); border: 1px solid var(--line);
+      border-radius: 12px; padding: 18px 16px;
+    }
+    .sum-val {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px; font-weight: 300; line-height: 1;
+      letter-spacing: -0.02em; margin-bottom: 4px;
+    }
+    .sum-lbl { font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+
+    .breakdown {
+      background: var(--s2); border: 1px solid var(--line);
+      border-radius: 12px; padding: 16px; margin-bottom: 20px;
+    }
+    .bk-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--line); }
+    .bk-row:last-child { border-bottom: none; }
+    .bk-label { font-size: 13px; font-weight: 400; color: var(--dim); display: flex; align-items: center; gap: 8px; }
+    .bk-val { font-size: 15px; font-weight: 600; color: var(--ink); }
+
+    .sheet-close {
+      width: 100%; background: var(--s2); border: 1px solid var(--line);
+      border-radius: 12px; color: var(--dim);
+      font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 500;
+      padding: 14px; cursor: pointer; transition: all .15s;
+    }
+    .sheet-close:active { background: var(--faint); }
+    .sheet-end-btn {
+      width: 100%; background: rgba(240,90,90,.12); border: 1px solid rgba(240,90,90,.25);
+      border-radius: 12px; color: var(--red);
+      font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 14px; cursor: pointer; transition: all .15s; margin-bottom: 10px;
+    }
+    .sheet-end-btn:active { background: rgba(240,90,90,.2); }
+
+    /* ── LEAD CONFIRM OVERLAY ── */
+    .lead-overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(0,0,0,.9); backdrop-filter: blur(12px);
+      display: none; align-items: center; justify-content: center; padding: 24px;
+    }
+    .lead-overlay.open { display: flex; }
+    .lead-card {
+      background: var(--s1); border: 1px solid rgba(47,207,130,.3);
+      border-radius: 20px; padding: 32px 24px;
+      width: 100%; max-width: 380px;
+      animation: popIn .2s ease;
+    }
+    @keyframes popIn { from { transform: scale(.92); opacity:0; } to { transform: none; opacity:1; } }
+    .lead-card-icon { font-size: 40px; text-align: center; margin-bottom: 14px; }
+    .lead-card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px; font-weight: 300; font-style: italic;
+      color: var(--em); text-align: center; margin-bottom: 6px;
+    }
+    .lead-card-sub { font-size: 13px; color: var(--dim); text-align: center; margin-bottom: 24px; }
+    .lead-form-label { font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); margin-bottom: 6px; display: block; }
+    .lead-input {
+      width: 100%; background: var(--s2); border: 1px solid var(--line);
+      border-radius: 10px; color: var(--ink);
+      font-family: 'Outfit', sans-serif; font-size: 15px;
+      padding: 13px 16px; outline: none; margin-bottom: 14px;
+      transition: border-color .15s; -webkit-appearance: none; user-select: text;
+    }
+    .lead-input:focus { border-color: var(--green); }
+    .lead-input::placeholder { color: var(--faint); }
+    .lead-confirm-btn {
+      width: 100%; background: var(--green); color: #000;
+      font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      border: none; border-radius: 12px; padding: 16px; cursor: pointer;
+      margin-bottom: 10px; transition: opacity .15s;
+    }
+    .lead-confirm-btn:active { opacity: .85; }
+    .lead-cancel-btn {
+      width: 100%; background: none; border: 1px solid var(--line);
+      border-radius: 12px; color: var(--dim);
+      font-family: 'Outfit', sans-serif; font-size: 13px;
+      padding: 14px; cursor: pointer;
+    }
+
+    /* ── EMPTY ── */
+    .empty-log { text-align: center; padding: 40px 20px; color: var(--faint); font-size: 14px; }
+    .empty-log-icon { font-size: 32px; margin-bottom: 10px; opacity: .4; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; top: 80px; left: 50%; transform: translateX(-50%) translateY(-16px);
+      background: var(--s1); border: 1px solid var(--green);
+      border-radius: 100px; padding: 10px 22px;
+      font-size: 13px; font-weight: 500; color: var(--green);
+      opacity: 0; transition: all .25s; pointer-events: none;
+      z-index: 500; white-space: nowrap;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- STATUS BAR -->
+  <div class="statusbar">
+    <div class="sb-left">
+      <a href="index.html" style="color:var(--dim);font-size:18px;text-decoration:none;margin-right:4px;line-height:1;">←</a><div class="sb-logo">Enpal <em>Saha</em></div>
+      <div class="shift-badge off" id="shift-badge">
+        <span class="sdot"></span>
+        <span id="shift-label">Vardiya Yok</span>
+      </div>
+    </div>
+    <div class="sb-timer" id="shift-timer">00:00</div>
+  </div>
+
+  <!-- EARN BAR -->
+  <div class="earnbar">
+    <div class="eb-cell">
+      <div class="eb-val dim" id="eb-doors">0</div>
+      <div class="eb-lbl">Kapı</div>
+    </div>
+    <div class="eb-cell">
+      <div class="eb-val blue" id="eb-leads">0</div>
+      <div class="eb-lbl">Lead</div>
+    </div>
+    <div class="eb-cell">
+      <div class="eb-val grn" id="eb-rate">0%</div>
+      <div class="eb-lbl">Oran</div>
+    </div>
+    <div class="eb-cell">
+      <div class="eb-val em" id="eb-earn">0€</div>
+      <div class="eb-lbl">Kazanç</div>
+    </div>
+  </div>
+
+  <!-- SCROLL AREA -->
+  <div class="scroll-area">
+
+    <!-- ADDRESS -->
+    <div class="section">
+      <div class="section-hd">Mevcut Adres</div>
+      <div class="addr-row">
+        <input type="text" class="addr-input" id="addr-input"
+          placeholder="Sokak adı, kapı no…" autocomplete="street-address">
+        <button class="addr-clear" onclick="clearAddr()">×</button>
+      </div>
+    </div>
+
+    <!-- QUICK NOTE -->
+    <div class="quick-note-row">
+      <textarea class="quick-note" id="quick-note" placeholder="Hızlı not… (ör: 'köpek var', '2. kat pencereden baktı')" rows="1"></textarea>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="section" style="padding-top:16px;">
+      <div class="section-hd">Kapı Sonucu</div>
+    </div>
+    <div class="action-grid">
+      <button class="act-btn btn-noanswer" onclick="logEntry('noanswer')">
+        <div class="act-icon">🔔</div>
+        <div class="act-label">Açmadı</div>
+        <div class="act-sub">Evde yok</div>
+      </button>
+      <button class="act-btn btn-notint" onclick="logEntry('notint')">
+        <div class="act-icon">✕</div>
+        <div class="act-label">İlgisiz</div>
+        <div class="act-sub">Kein Interesse</div>
+      </button>
+      <button class="act-btn btn-callback" onclick="logEntry('callback')">
+        <div class="act-icon">↩</div>
+        <div class="act-label">Callback</div>
+        <div class="act-sub">Später anrufen</div>
+      </button>
+      <button class="act-btn btn-lead" onclick="openLeadForm()">
+        <div class="act-icon">⬡</div>
+        <div class="act-label">Lead ✓</div>
+        <div class="act-sub">+50 €</div>
+      </button>
+    </div>
+
+    <!-- SHIFT CONTROL -->
+    <div class="shift-ctrl">
+      <button class="shift-btn start" id="shift-btn" onclick="toggleShift()">
+        ▶ Vardiayı Başlat
+      </button>
+    </div>
+
+    <!-- LOG -->
+    <div class="section" style="padding-top:20px;">
+      <div class="section-hd" id="log-hd">Bugünkü Kayıtlar</div>
+    </div>
+    <div class="log-list" id="log-list"></div>
+    <div class="empty-log" id="empty-log">
+      <div class="empty-log-icon">◈</div>
+      Henüz kayıt yok.<br>Bir kapı sonucu gir.
+    </div>
+
+  </div><!-- /scroll -->
+</div><!-- /app -->
+
+<!-- LEAD FORM OVERLAY -->
+<div class="lead-overlay" id="lead-overlay">
+  <div class="lead-card">
+    <div class="lead-card-icon">🎯</div>
+    <div class="lead-card-title">Lead bulundu!</div>
+    <div class="lead-card-sub">Kişi bilgilerini gir — termin için gerekli</div>
+    <label class="lead-form-label">Ad Soyad</label>
+    <input type="text" class="lead-input" id="lead-name" placeholder="Hans Müller">
+    <label class="lead-form-label">Telefon</label>
+    <input type="tel" class="lead-input" id="lead-tel" placeholder="+49 ···">
+    <label class="lead-form-label">Heizungstyp</label>
+    <input type="text" class="lead-input" id="lead-heat" placeholder="Gas / Öl / unbekannt">
+    <button class="lead-confirm-btn" onclick="confirmLead()">Lead bestätigen → +50 €</button>
+    <button class="lead-cancel-btn" onclick="closeLead()">Abbrechen</button>
+  </div>
+</div>
+
+<!-- SUMMARY OVERLAY -->
+<div class="overlay" id="summary-overlay">
+  <div class="summary-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Gün Sonu <em>Özeti</em></div>
+    <div class="sheet-sub" id="sum-date">—</div>
+    <div class="summary-grid">
+      <div class="sum-card">
+        <div class="sum-val" id="sum-doors" style="color:var(--ink)">0</div>
+        <div class="sum-lbl">Toplam Kapı</div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-val" id="sum-leads" style="color:var(--em)">0</div>
+        <div class="sum-lbl">Lead</div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-val" id="sum-earn" style="color:var(--green)">0 €</div>
+        <div class="sum-lbl">Günlük Kazanç</div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-val" id="sum-time" style="color:var(--blue)">0:00</div>
+        <div class="sum-lbl">Çalışma Süresi</div>
+      </div>
+    </div>
+    <div class="breakdown" id="sum-breakdown"></div>
+    <button class="sheet-end-btn" onclick="endShift()">Vardiayı Bitir &amp; Sıfırla</button>
+    <button class="sheet-close" onclick="closeSummary()">Geri Dön</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✓</div>
+
+<script>
+  // ── STATE ──
+  const state = {
+    running: false,
+    startTime: null,
+    elapsed: 0,
+    timerInterval: null,
+    log: JSON.parse(localStorage.getItem('saha_log') || '[]'),
+    currentAddr: '',
+    pendingLeadAddr: ''
+  };
+
+  // ── INIT ──
+  renderLog();
+  updateEarnBar();
+
+  // restore shift if page reloaded
+  const saved = JSON.parse(localStorage.getItem('saha_shift') || 'null');
+  if (saved && saved.running) {
+    state.running = true;
+    state.startTime = saved.startTime;
+    state.elapsed = Date.now() - saved.startTime;
+    startTimer();
+    updateShiftUI(true);
+  }
+
+  // ── SHIFT ──
+  function toggleShift() {
+    if (!state.running) {
+      state.running = true;
+      state.startTime = Date.now() - state.elapsed;
+      startTimer();
+      updateShiftUI(true);
+      localStorage.setItem('saha_shift', JSON.stringify({running:true, startTime:state.startTime}));
+      showToast('Vardiya başladı ▶');
+    } else {
+      openSummary();
+    }
+  }
+
+  function startTimer() {
+    clearInterval(state.timerInterval);
+    state.timerInterval = setInterval(() => {
+      state.elapsed = Date.now() - state.startTime;
+      document.getElementById('shift-timer').textContent = fmtTime(state.elapsed);
+    }, 1000);
+  }
+
+  function endShift() {
+    state.running = false;
+    clearInterval(state.timerInterval);
+    state.elapsed = 0;
+    state.log = [];
+    localStorage.removeItem('saha_shift');
+    localStorage.removeItem('saha_log');
+    closeSummary();
+    updateShiftUI(false);
+    renderLog();
+    updateEarnBar();
+    document.getElementById('shift-timer').textContent = '00:00';
+    showToast('Vardiya bitti. Güzel iş! ✓');
+  }
+
+  function updateShiftUI(on) {
+    const badge = document.getElementById('shift-badge');
+    const btn   = document.getElementById('shift-btn');
+    if (on) {
+      badge.className = 'shift-badge';
+      document.getElementById('shift-label').textContent = 'Aktif';
+      btn.className = 'shift-btn end';
+      btn.textContent = '◼ Vardiayı Bitir';
+    } else {
+      badge.className = 'shift-badge off';
+      document.getElementById('shift-label').textContent = 'Vardiya Yok';
+      btn.className = 'shift-btn start';
+      btn.textContent = '▶ Vardiayı Başlat';
+    }
+  }
+
+  // ── LOGGING ──
+  function logEntry(type) {
+    const addr = document.getElementById('addr-input').value.trim() || 'Adres yok';
+    const note = document.getElementById('quick-note').value.trim();
+    const entry = {
+      id: Date.now(),
+      type, addr, note,
+      time: new Date().toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'})
+    };
+    state.log.unshift(entry);
+    save();
+    renderLog();
+    updateEarnBar();
+    clearNote();
+    // advance address number
+    autoAdvanceAddr();
+    const labels = {noanswer:'Açmadı kaydedildi',notint:'İlgisiz kaydedildi',callback:'Callback kaydedildi',lead:'Lead kaydedildi — +50 €!'};
+    showToast(labels[type]);
+  }
+
+  function autoAdvanceAddr() {
+    const inp = document.getElementById('addr-input');
+    const val = inp.value.trim();
+    if (!val) return;
+    // try to increment trailing number
+    const m = val.match(/^(.*?)(\d+)(\s*[a-zA-Z]?)$/);
+    if (m) {
+      const next = parseInt(m[2]) + 2; // houses usually odd or even
+      inp.value = m[1] + next + m[3];
+    }
+  }
+
+  function openLeadForm() {
+    state.pendingLeadAddr = document.getElementById('addr-input').value.trim();
+    document.getElementById('lead-name').value = '';
+    document.getElementById('lead-tel').value = '';
+    document.getElementById('lead-heat').value = '';
+    document.getElementById('lead-overlay').classList.add('open');
+    setTimeout(() => document.getElementById('lead-name').focus(), 300);
+  }
+
+  function closeLead() {
+    document.getElementById('lead-overlay').classList.remove('open');
+  }
+
+  function confirmLead() {
+    const name = document.getElementById('lead-name').value.trim();
+    const tel  = document.getElementById('lead-tel').value.trim();
+    const heat = document.getElementById('lead-heat').value.trim();
+    const note = document.getElementById('quick-note').value.trim();
+    const addr = state.pendingLeadAddr || document.getElementById('addr-input').value.trim() || 'Adres yok';
+    const entry = {
+      id: Date.now(), type: 'lead', addr,
+      note: [name && `Ad: ${name}`, tel && `Tel: ${tel}`, heat && `Isıtma: ${heat}`, note].filter(Boolean).join(' | '),
+      time: new Date().toLocaleTimeString('de-DE', {hour:'2-digit',minute:'2-digit'})
+    };
+    state.log.unshift(entry);
+    save();
+    renderLog();
+    updateEarnBar();
+    clearNote();
+    autoAdvanceAddr();
+    closeLead();
+
+    // save lead to admin localStorage
+    const apps = JSON.parse(localStorage.getItem('enpal_applications') || '[]');
+    if (name) {
+      apps.unshift({
+        id: Date.now()+1, name, tel: tel||'', ort: addr, time: '', why: `Saha lead — Isıtma: ${heat}`,
+        date: new Date().toISOString(), status: 'neu'
+      });
+      localStorage.setItem('enpal_applications', JSON.stringify(apps));
+    }
+    showToast('🎯 Lead onaylandı! +50 €');
+  }
+
+  // ── RENDER ──
+  function renderLog() {
+    const list = document.getElementById('log-list');
+    const empty = document.getElementById('empty-log');
+    const hd = document.getElementById('log-hd');
+    if (!state.log.length) {
+      list.innerHTML = ''; empty.style.display = 'block'; hd.textContent = 'Bugünkü Kayıtlar'; return;
+    }
+    empty.style.display = 'none';
+    hd.textContent = `Bugünkü Kayıtlar (${state.log.length})`;
+    const labels = {noanswer:'Açmadı', notint:'İlgisiz', callback:'Callback', lead:'Lead'};
+    list.innerHTML = state.log.map(e => `
+      <div class="log-item">
+        <div class="log-dot d-${e.type}"></div>
+        <div class="log-addr">
+          ${esc(e.addr)}
+          <span>${esc(e.note||'')}</span>
+        </div>
+        <div class="log-type t-${e.type}">${labels[e.type]}</div>
+        <div class="log-time">${e.time}</div>
+        <button class="log-delete" onclick="deleteLog(${e.id})">✕</button>
+      </div>`).join('');
+  }
+
+  function updateEarnBar() {
+    const doors = state.log.length;
+    const leads = state.log.filter(e => e.type === 'lead').length;
+    const rate  = doors ? Math.round(leads/doors*100) : 0;
+    const earn  = leads * 50;
+    document.getElementById('eb-doors').textContent = doors;
+    document.getElementById('eb-leads').textContent = leads;
+    document.getElementById('eb-rate').textContent  = rate + '%';
+    document.getElementById('eb-earn').textContent  = earn + '€';
+  }
+
+  function deleteLog(id) {
+    state.log = state.log.filter(e => e.id !== id);
+    save();
+    renderLog();
+    updateEarnBar();
+  }
+
+  // ── SUMMARY ──
+  function openSummary() {
+    const doors = state.log.length;
+    const leads = state.log.filter(e => e.type === 'lead').length;
+    const noans = state.log.filter(e => e.type === 'noanswer').length;
+    const notnt = state.log.filter(e => e.type === 'notint').length;
+    const callb = state.log.filter(e => e.type === 'callback').length;
+    const earn  = leads * 50;
+
+    document.getElementById('sum-date').textContent =
+      new Date().toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'long'});
+    document.getElementById('sum-doors').textContent = doors;
+    document.getElementById('sum-leads').textContent = leads;
+    document.getElementById('sum-earn').textContent  = earn + ' €';
+    document.getElementById('sum-time').textContent  = fmtTime(state.elapsed);
+
+    document.getElementById('sum-breakdown').innerHTML = `
+      <div class="bk-row">
+        <div class="bk-label"><span style="width:8px;height:8px;border-radius:50%;background:#8aabcc;display:inline-block;"></span> Açmadı</div>
+        <div class="bk-val">${noans}</div>
+      </div>
+      <div class="bk-row">
+        <div class="bk-label"><span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block;"></span> İlgisiz</div>
+        <div class="bk-val">${notnt}</div>
+      </div>
+      <div class="bk-row">
+        <div class="bk-label"><span style="width:8px;height:8px;border-radius:50%;background:var(--yellow);display:inline-block;"></span> Callback</div>
+        <div class="bk-val">${callb}</div>
+      </div>
+      <div class="bk-row">
+        <div class="bk-label"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;"></span> Lead</div>
+        <div class="bk-val" style="color:var(--em);font-size:18px;font-family:'Cormorant Garamond',serif;">${leads}</div>
+      </div>`;
+
+    document.getElementById('summary-overlay').classList.add('open');
+  }
+
+  function closeSummary() {
+    document.getElementById('summary-overlay').classList.remove('open');
+  }
+
+  // ── HELPERS ──
+  function clearAddr() { document.getElementById('addr-input').value = ''; }
+  function clearNote() { document.getElementById('quick-note').value = ''; }
+  function save() { localStorage.setItem('saha_log', JSON.stringify(state.log)); }
+  function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function fmtTime(ms) {
+    const s = Math.floor(ms/1000), m = Math.floor(s/60), h = Math.floor(m/60);
+    return h > 0 ? `${h}:${String(m%60).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`
+                 : `${String(m).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
+</script>
+</body>
+</html>

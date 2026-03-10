@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Enpal Partner — Bis zu 2.000 € / Monat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:       #f0ede8;
+      --ink-dim:   #7a8c7e;
+      --ink-faint: #2e3d32;
+      --bg:        #060908;
+      --surface:   #0b0f0c;
+      --card:      #0e1410;
+      --line:      rgba(255,255,255,0.06);
+      --em:        #c8f068;
+      --em2:       #5fd4a0;
+      --green:     #2a9d68;
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* GRAIN */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.028'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999;
+    }
+
+    /* AMBIENT */
+    .ambient { position: fixed; border-radius: 50%; filter: blur(140px); pointer-events: none; z-index: 0; }
+    .a1 { width:500px; height:500px; background:#0e3320; top:-180px; left:-120px; opacity:.5; }
+    .a2 { width:400px; height:400px; background:#081a0f; bottom:0; right:-100px; opacity:.6; }
+
+    /* LAYOUT */
+    .page { max-width: 760px; margin: 0 auto; padding: 0 28px 140px; position: relative; z-index: 1; }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(6,9,8,.82);
+      backdrop-filter: blur(20px) saturate(1.4);
+      border-bottom: 1px solid var(--line);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 28px;
+    }
+    .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--ink); letter-spacing: 0.04em; }
+    .nav-logo em { color: var(--em); font-style: normal; }
+    .nav-pill {
+      border: 1px solid var(--line); background: none; color: var(--ink);
+      font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 9px 22px; border-radius: 2px; text-decoration: none;
+      transition: background .2s, border-color .2s, color .2s;
+    }
+    .nav-pill:hover { background: var(--em); border-color: var(--em); color: #000; }
+
+    /* TICKER */
+    .ticker-wrap { overflow: hidden; border-bottom: 1px solid var(--line); background: var(--surface); }
+    .ticker { display: flex; animation: ticker 22s linear infinite; white-space: nowrap; }
+    .ticker-item {
+      padding: 10px 48px; font-size: 11px; font-weight: 500;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--ink-dim); border-right: 1px solid var(--line); flex-shrink: 0;
+    }
+    .ticker-item span { color: var(--em); margin-right: 8px; }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* HERO */
+    .hero { padding: 100px 0 80px; border-bottom: 1px solid var(--line); }
+
+    .hero-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 36px; }
+    .live-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--em2);
+      box-shadow: 0 0 0 0 rgba(95,212,160,.4); animation: livepulse 2.4s infinite;
+    }
+    @keyframes livepulse {
+      0%  { box-shadow: 0 0 0 0 rgba(95,212,160,.5); }
+      70% { box-shadow: 0 0 0 8px rgba(95,212,160,0); }
+      100%{ box-shadow: 0 0 0 0 rgba(95,212,160,0); }
+    }
+    .hero-eyebrow-text { font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-dim); }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(52px, 9vw, 88px); font-weight: 300;
+      line-height: 1.0; letter-spacing: -0.01em; margin-bottom: 28px;
+    }
+    h1 strong { font-weight: 600; color: var(--em); font-style: italic; }
+
+    .hero-body { font-size: 16px; font-weight: 300; color: var(--ink-dim); max-width: 420px; line-height: 1.85; margin-bottom: 48px; }
+
+    .hero-cta-row { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+    .btn-main {
+      background: var(--em); color: #000;
+      font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      padding: 15px 34px; border-radius: 2px; text-decoration: none;
+      transition: opacity .2s, transform .2s;
+    }
+    .btn-main:hover { opacity: .88; transform: translateY(-1px); }
+    .btn-link { font-size: 13px; font-weight: 400; color: var(--ink-dim); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color .2s; }
+    .btn-link:hover { color: var(--ink); }
+    .btn-link::after { content: '↓'; }
+
+    /* NUMBERS */
+    .numbers-row { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 72px 0; }
+    .num-cell { padding: 36px 0; border-right: 1px solid var(--line); }
+    .num-cell:first-child { padding-left: 0; }
+    .num-cell:last-child  { border-right: none; padding-left: 32px; }
+    .num-cell:nth-child(2){ padding-left: 32px; }
+    .num-val { font-family: 'Cormorant Garamond', serif; font-size: 52px; font-weight: 300; color: var(--ink); line-height: 1; letter-spacing: -0.02em; display: block; margin-bottom: 6px; }
+    .num-lbl { font-size: 11px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-dim); }
+    @media(max-width: 520px) {
+      .numbers-row { grid-template-columns: 1fr; }
+      .num-cell { border-right: none; border-bottom: 1px solid var(--line); padding: 28px 0 !important; }
+      .num-cell:last-child { border-bottom: none; }
+    }
+
+    /* EARN */
+    .earn-strip { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; margin-bottom: 80px; }
+    @media(max-width: 500px){ .earn-strip { grid-template-columns: 1fr; } }
+    .earn-cell { background: var(--card); padding: 36px 32px; position: relative; transition: background .2s; }
+    .earn-cell:hover { background: #121a14; }
+    .earn-cell::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--green), transparent); }
+    .earn-amount { font-family: 'Cormorant Garamond', serif; font-size: 64px; font-weight: 300; color: var(--em); line-height: 1; letter-spacing: -0.02em; margin-bottom: 12px; }
+    .earn-title { font-size: 11px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--green); margin-bottom: 12px; }
+    .earn-desc { font-size: 13.5px; font-weight: 300; color: var(--ink-faint); line-height: 1.6; }
+
+    /* SECTION HEADER */
+    .s-head { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+    .s-num { font-family: 'Cormorant Garamond', serif; font-size: 13px; font-weight: 400; color: var(--ink-faint); font-style: italic; }
+    .s-label { font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-dim); }
+    .s-line { flex: 1; height: 1px; background: var(--line); }
+    section { margin-bottom: 72px; }
+
+    /* BODY TEXT */
+    .body-text { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: #8fa895; line-height: 1.75; font-style: italic; border-left: 1px solid var(--green); padding-left: 24px; }
+
+    /* CRITERIA */
+    .criteria { display: flex; flex-direction: column; gap: 1px; }
+    .criterion { display: flex; align-items: center; background: var(--card); transition: background .2s; }
+    .criterion:hover { background: #101610; }
+    .criterion:first-child { border-radius: 4px 4px 0 0; }
+    .criterion:last-child  { border-radius: 0 0 4px 4px; }
+    .cr-index { font-family: 'Cormorant Garamond', serif; font-size: 11px; font-weight: 400; font-style: italic; color: var(--ink-faint); width: 48px; flex-shrink: 0; padding: 20px 0 20px 20px; }
+    .cr-divider { width: 1px; height: 56px; background: var(--line); flex-shrink: 0; }
+    .cr-body { padding: 20px 24px; flex: 1; }
+    .cr-title { font-size: 14px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+    .cr-desc  { font-size: 12.5px; font-weight: 300; color: var(--ink-dim); }
+    .cr-check { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--green); display: flex; align-items: center; justify-content: center; color: var(--em2); font-size: 11px; flex-shrink: 0; margin-right: 20px; }
+
+    /* LIST */
+    .plist { list-style: none; display: flex; flex-direction: column; }
+    .plist li { display: flex; align-items: baseline; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--line); font-size: 15px; font-weight: 300; color: #94b09b; transition: color .15s; }
+    .plist li:first-child { border-top: 1px solid var(--line); }
+    .plist li:hover { color: var(--ink); }
+    .plist li::before { content: '–'; color: var(--green); flex-shrink: 0; font-family: 'Cormorant Garamond', serif; }
+
+    /* STEPS */
+    .steps { display: flex; flex-direction: column; }
+    .step { display: grid; grid-template-columns: 48px 1fr; padding: 28px 0; border-bottom: 1px solid var(--line); }
+    .step:first-child { border-top: 1px solid var(--line); }
+    .step-n { font-family: 'Cormorant Garamond', serif; font-size: 13px; font-weight: 400; font-style: italic; color: var(--ink-faint); padding-top: 3px; }
+    .step-body h3 { font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 600; color: var(--ink); margin-bottom: 5px; }
+    .step-body p { font-size: 13.5px; font-weight: 300; color: var(--ink-dim); line-height: 1.65; }
+    .step-tag { display: inline-block; border: 1px solid var(--line); border-radius: 2px; font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); padding: 4px 10px; margin-top: 10px; }
+
+    /* CALC */
+    .calc { background: var(--card); border: 1px solid var(--line); border-radius: 4px; padding: 40px 36px; margin-bottom: 80px; }
+    @media(max-width: 520px){ .calc { padding: 28px 20px; } }
+    .calc-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+    .calc-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; color: var(--ink); }
+    .calc-sub { font-size: 12px; font-weight: 400; color: var(--ink-faint); }
+    .calc-divider { height: 1px; background: var(--line); margin: 28px 0; }
+
+    .slider-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 20px; margin-bottom: 24px; }
+    .slider-lbl { font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 12px; display: block; }
+    input[type="range"] { -webkit-appearance: none; width: 100%; height: 2px; background: var(--line); outline: none; cursor: pointer; border-radius: 1px; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--em); cursor: pointer; border: 3px solid var(--bg); box-shadow: 0 0 0 1px var(--green); transition: box-shadow .15s; }
+    input[type="range"]::-webkit-slider-thumb:hover { box-shadow: 0 0 0 1px var(--green), 0 0 12px rgba(200,240,104,.2); }
+    .slider-val-box { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: var(--em); line-height: 1; min-width: 60px; text-align: right; }
+
+    .calc-result { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border-radius: 3px; overflow: hidden; margin-top: 32px; }
+    @media(max-width:480px){ .calc-result { grid-template-columns: 1fr; } }
+    .cr-cell { background: #0a0f0b; padding: 24px 22px; }
+    .cr-cell-val { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; color: var(--ink); line-height: 1; letter-spacing: -0.01em; margin-bottom: 5px; }
+    .cr-cell-lbl { font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faint); }
+
+    /* TESTIMONIALS */
+    .testimonials { display: flex; flex-direction: column; gap: 1px; }
+    .testi { background: var(--card); padding: 28px 28px 24px; transition: background .2s; }
+    .testi:first-child { border-radius: 4px 4px 0 0; }
+    .testi:last-child  { border-radius: 0 0 4px 4px; }
+    .testi:hover { background: #101610; }
+    .testi-quote { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 300; font-style: italic; color: #8fa895; line-height: 1.8; margin-bottom: 18px; }
+    .testi-quote::before { content: '\275D '; color: var(--green); font-style: normal; }
+    .testi-meta { display: flex; align-items: center; justify-content: space-between; }
+    .testi-who { font-size: 12px; font-weight: 400; color: var(--ink-dim); }
+    .testi-who strong { color: var(--ink); font-weight: 500; display: block; margin-bottom: 1px; }
+    .testi-earn { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 300; color: var(--em); }
+
+    /* FAQ */
+    .faqs { display: flex; flex-direction: column; }
+    .faq { border-bottom: 1px solid var(--line); }
+    .faq:first-child { border-top: 1px solid var(--line); }
+    .faq-q { width: 100%; background: none; border: none; display: flex; align-items: center; justify-content: space-between; padding: 20px 0; gap: 16px; cursor: pointer; text-align: left; }
+    .faq-q-text { font-size: 15px; font-weight: 400; color: var(--ink); transition: color .15s; }
+    .faq-q:hover .faq-q-text { color: var(--em); }
+    .faq-icon { color: var(--ink-faint); font-size: 18px; flex-shrink: 0; transition: transform .25s, color .2s; line-height: 1; }
+    .faq.open .faq-icon { transform: rotate(45deg); color: var(--em); }
+    .faq-a { overflow: hidden; max-height: 0; transition: max-height .3s ease; }
+    .faq.open .faq-a { max-height: 280px; }
+    .faq-a-inner { padding: 0 0 20px; font-size: 14px; font-weight: 300; color: var(--ink-dim); line-height: 1.75; }
+
+    /* FORM */
+    .form-section { background: var(--card); border: 1px solid var(--line); border-radius: 4px; padding: 48px 40px; margin-bottom: 80px; }
+    @media(max-width:520px){ .form-section { padding: 32px 24px; } }
+    .form-head { margin-bottom: 40px; border-bottom: 1px solid var(--line); padding-bottom: 28px; }
+    .form-title { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; color: var(--ink); margin-bottom: 6px; }
+    .form-title em { color: var(--em); font-style: italic; }
+    .form-sub { font-size: 13px; font-weight: 300; color: var(--ink-dim); line-height: 1.7; }
+
+    .fg { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+    .fg-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    @media(max-width:480px){ .fg-row { grid-template-columns: 1fr; } }
+    .fg label { font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint); }
+    .fg input, .fg select, .fg textarea { background: var(--surface); border: 1px solid var(--line); border-radius: 2px; color: var(--ink); font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 300; padding: 12px 14px; outline: none; transition: border-color .15s; width: 100%; }
+    .fg input:focus, .fg select:focus, .fg textarea:focus { border-color: var(--green); }
+    .fg input::placeholder, .fg textarea::placeholder { color: var(--ink-faint); }
+    .fg select option { background: #0b0f0c; }
+    .fg textarea { min-height: 80px; resize: vertical; }
+
+    .submit-btn { width: 100%; background: var(--em); color: #000; font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; border: none; border-radius: 2px; padding: 17px; cursor: pointer; margin-top: 6px; transition: opacity .2s, transform .15s; }
+    .submit-btn:hover { opacity: .88; transform: translateY(-1px); }
+    .form-footnote { text-align: center; margin-top: 14px; font-size: 11px; font-weight: 300; color: var(--ink-faint); letter-spacing: 0.06em; }
+
+    .form-success { display: none; text-align: center; padding: 32px 0; }
+    .success-ring { width: 60px; height: 60px; border-radius: 50%; border: 1px solid var(--green); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--em2); }
+    .success-hed { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 300; font-style: italic; color: var(--ink); margin-bottom: 8px; }
+    .success-sub { font-size: 13px; font-weight: 300; color: var(--ink-dim); }
+
+    /* FOOTER */
+    footer { border-top: 1px solid var(--line); padding-top: 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .footer-text { font-size: 11px; font-weight: 300; color: var(--ink-faint); letter-spacing: 0.08em; }
+    .footer-mark { font-family: 'Cormorant Garamond', serif; font-size: 14px; color: var(--ink-faint); font-style: italic; }
+
+    /* REVEAL */
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity .65s ease, transform .65s ease; }
+    .reveal.vis { opacity: 1; transform: translateY(0); }
+    .d1 { transition-delay: .08s; }
+    .d2 { transition-delay: .16s; }
+  </style>
+</head>
+<body>
+
+<div class="ambient a1"></div>
+<div class="ambient a2"></div>
+
+<nav>
+  <a href="index.html" style="color:var(--ink-dim);font-size:13px;text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--ink-dim)'">← Ana Menü</a><div class="nav-logo">Enpal <em>×</em> Partner</div>
+  <a href="#bewerben" class="nav-pill">Bewerben →</a>
+</nav>
+
+<div class="ticker-wrap">
+  <div class="ticker">
+    <div class="ticker-item"><span>50 €</span>Pro qualifiziertem Lead</div>
+    <div class="ticker-item"><span>+300 €</span>Bei Abschluss</div>
+    <div class="ticker-item"><span>✦</span>Wöchentliche Auszahlung</div>
+    <div class="ticker-item"><span>✦</span>Flexible Zeiteinteilung</div>
+    <div class="ticker-item"><span>✦</span>Sofort starten möglich</div>
+    <div class="ticker-item"><span>✦</span>Kein Verkaufen</div>
+    <div class="ticker-item"><span>50 €</span>Pro qualifiziertem Lead</div>
+    <div class="ticker-item"><span>+300 €</span>Bei Abschluss</div>
+    <div class="ticker-item"><span>✦</span>Wöchentliche Auszahlung</div>
+    <div class="ticker-item"><span>✦</span>Flexible Zeiteinteilung</div>
+    <div class="ticker-item"><span>✦</span>Sofort starten möglich</div>
+    <div class="ticker-item"><span>✦</span>Kein Verkaufen</div>
+  </div>
+</div>
+
+<div class="page">
+
+  <header class="hero">
+    <div class="hero-eyebrow">
+      <div class="live-dot"></div>
+      <span class="hero-eyebrow-text">Außendienst · Nebenjob · Köln &amp; Umgebung</span>
+    </div>
+    <h1>Verdiene bis zu<br><strong>2.000 € im Monat</strong><br>nebenher.</h1>
+    <p class="hero-body">
+      Du klingelst. Du fragst. Du qualifizierst.<br>
+      Kein Verkaufen – nur den richtigen Hausbesitzern zeigen,
+      dass eine Wärmepumpe für sie infrage kommt.
+    </p>
+    <div class="hero-cta-row">
+      <a href="#bewerben" class="btn-main">Jetzt bewerben</a>
+      <a href="#rechner" class="btn-link">Verdienst berechnen</a>
+    </div>
+  </header>
+
+  <div class="numbers-row reveal">
+    <div class="num-cell">
+      <span class="num-val" data-target="847">0</span>
+      <span class="num-lbl">Leads diesen Monat</span>
+    </div>
+    <div class="num-cell">
+      <span class="num-val" data-target="94" data-suffix=" %">0</span>
+      <span class="num-lbl">Auszahlungsquote</span>
+    </div>
+    <div class="num-cell">
+      <span class="num-val" data-target="24" data-suffix=" h">0</span>
+      <span class="num-lbl">Antwortzeit</span>
+    </div>
+  </div>
+
+  <div class="earn-strip">
+    <div class="earn-cell reveal">
+      <div class="earn-amount">50 €</div>
+      <div class="earn-title">Pro qualifiziertem Lead</div>
+      <div class="earn-desc">Hausbesitzer, Eigenheim, Gasheizung, Entscheider vor Ort – Termin bestätigt.</div>
+    </div>
+    <div class="earn-cell reveal d1">
+      <div class="earn-amount">300 €</div>
+      <div class="earn-title">Bei erfolgreichem Abschluss</div>
+      <div class="earn-desc">Wird dein Lead zur installierten Anlage, kassierst du zusätzlich 300 € on top.</div>
+    </div>
+  </div>
+
+  <section class="reveal">
+    <div class="s-head">
+      <span class="s-num">i.</span>
+      <span class="s-label">Was du tust</span>
+      <div class="s-line"></div>
+    </div>
+    <p class="body-text">
+      Du gehst von Tür zu Tür in Wohngebieten mit Einfamilienhäusern.
+      Deine Aufgabe: herausfinden, ob das Haus und der Eigentümer zur Enpal Wärmepumpe passen.
+      Du machst keinen Abschluss – das übernimmt unser Team. Du öffnest nur die Tür.
+    </p>
+  </section>
+
+  <section class="reveal">
+    <div class="s-head">
+      <span class="s-num">ii.</span>
+      <span class="s-label">Qualifizierter Lead</span>
+      <div class="s-line"></div>
+    </div>
+    <div class="criteria">
+      <div class="criterion">
+        <div class="cr-index">01</div><div class="cr-divider"></div>
+        <div class="cr-body"><div class="cr-title">Eigenheim</div><div class="cr-desc">Kein Mieter, kein Mehrfamilienhaus – nur Hausbesitzer zählen.</div></div>
+        <div class="cr-check">✓</div>
+      </div>
+      <div class="criterion">
+        <div class="cr-index">02</div><div class="cr-divider"></div>
+        <div class="cr-body"><div class="cr-title">Gasheizung vorhanden</div><div class="cr-desc">Oder alte Ölheizung – Umrüstpotenzial muss vorhanden sein.</div></div>
+        <div class="cr-check">✓</div>
+      </div>
+      <div class="criterion">
+        <div class="cr-index">03</div><div class="cr-divider"></div>
+        <div class="cr-body"><div class="cr-title">Entscheider vor Ort</div><div class="cr-desc">Du sprichst direkt mit dem Eigentümer, nicht mit Mietern.</div></div>
+        <div class="cr-check">✓</div>
+      </div>
+      <div class="criterion">
+        <div class="cr-index">04</div><div class="cr-divider"></div>
+        <div class="cr-body"><div class="cr-title">Interesse &amp; Termin</div><div class="cr-desc">Termin mit unserem Berater wird vereinbart und bestätigt.</div></div>
+        <div class="cr-check">✓</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="calc reveal" id="rechner">
+    <div class="calc-header">
+      <div class="calc-title">Verdienst-Rechner</div>
+      <div class="calc-sub">Echtzeit-Simulation</div>
+    </div>
+    <div class="calc-divider"></div>
+    <div class="slider-row">
+      <div><span class="slider-lbl">Türen pro Tag</span><input type="range" id="doors" min="10" max="100" value="40" step="5"></div>
+      <div class="slider-val-box" id="doors-val">40</div>
+    </div>
+    <div class="slider-row">
+      <div><span class="slider-lbl">Arbeitstage pro Woche</span><input type="range" id="days" min="1" max="7" value="4" step="1"></div>
+      <div class="slider-val-box" id="days-val">4</div>
+    </div>
+    <div class="slider-row">
+      <div><span class="slider-lbl">Ansprechrate</span><input type="range" id="rate" min="3" max="20" value="8" step="1"></div>
+      <div class="slider-val-box" id="rate-val">8 %</div>
+    </div>
+    <div class="calc-result">
+      <div class="cr-cell"><div class="cr-cell-val" id="r-leads">0</div><div class="cr-cell-lbl">Leads / Monat</div></div>
+      <div class="cr-cell"><div class="cr-cell-val" id="r-base">0 €</div><div class="cr-cell-lbl">Basis-Verdienst</div></div>
+      <div class="cr-cell"><div class="cr-cell-val" id="r-bonus">0 €</div><div class="cr-cell-lbl">Inkl. Abschlüsse</div></div>
+    </div>
+  </div>
+
+  <section class="reveal">
+    <div class="s-head">
+      <span class="s-num">iii.</span>
+      <span class="s-label">Wen wir suchen</span>
+      <div class="s-line"></div>
+    </div>
+    <ul class="plist">
+      <li>Du bist kommunikativ und gehst gerne auf Menschen zu</li>
+      <li>Du willst echtes Geld verdienen – Leistung, kein Stundenlohn</li>
+      <li>Du bist belastbar – nicht jeder macht die Tür auf, das ist okay</li>
+      <li>Vertriebserfahrung ist ein Plus, aber kein Muss</li>
+      <li>Du kannst deine Zeit selbst einteilen – Voll- oder Teilzeit</li>
+    </ul>
+  </section>
+
+  <section class="reveal">
+    <div class="s-head">
+      <span class="s-num">iv.</span>
+      <span class="s-label">So läuft es ab</span>
+      <div class="s-line"></div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">01.</div>
+        <div class="step-body"><h3>Kurzes Gespräch</h3><p>15 Minuten, kein Bewerbungsmarathon. Wir schauen ob es passt.</p><span class="step-tag">15 Min</span></div>
+      </div>
+      <div class="step">
+        <div class="step-n">02.</div>
+        <div class="step-body"><h3>Einweisung &amp; Skript</h3><p>Du bekommst Gesprächsleitfaden, Einwände, No-Gos. In 2–3 Stunden startklar.</p><span class="step-tag">2–3 Stunden</span></div>
+      </div>
+      <div class="step">
+        <div class="step-n">03.</div>
+        <div class="step-body"><h3>Probewoche</h3><p>Du legst los. Wir schauen gemeinsam auf deine ersten Leads und geben direktes Feedback.</p><span class="step-tag">1 Woche</span></div>
+      </div>
+      <div class="step">
+        <div class="step-n">04.</div>
+        <div class="step-body"><h3>Wöchentliche Auszahlung</h3><p>Kein Warten auf Monatsende. Leads werden wöchentlich abgerechnet und ausgezahlt.</p><span class="step-tag">Jeden Freitag</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <div class="s-head">
+      <span class="s-num">v.</span>
+      <span class="s-label">Was andere sagen</span>
+      <div class="s-line"></div>
+    </div>
+    <div class="testimonials">
+      <div class="testi">
+        <div class="testi-quote">Ich hab die ersten zwei Wochen gebraucht um den Dreh rauszukriegen. Danach lief es. Im dritten Monat hab ich 1.840 € nebenher gemacht – neben meinem Hauptjob.</div>
+        <div class="testi-meta">
+          <div class="testi-who"><strong>Mehmet K.</strong>Köln · 4 Monate dabei</div>
+          <div class="testi-earn">1.840 €</div>
+        </div>
+      </div>
+      <div class="testi">
+        <div class="testi-quote">Ich dachte Türklingeln wäre unangenehm. Ist es manchmal. Aber wenn du ein gutes Gespräch hast und 50 € in der Tasche weißt – das motiviert.</div>
+        <div class="testi-meta">
+          <div class="testi-who"><strong>Sandra H.</strong>Düsseldorf · 2 Monate dabei</div>
+          <div class="testi-earn">920 €</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <div class="s-head">
+      <span class="s-num">vi.</span>
+      <span class="s-label">Häufige Fragen</span>
+      <div class="s-line"></div>
+    </div>
+    <div class="faqs">
+      <div class="faq">
+        <button class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">Brauche ich einen Gewerbeschein?</span><span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Wir empfehlen einen Gewerbeschein – für ca. 20–40 € beim Bürgeramt schnell erledigt. Für regelmäßige Auszahlungen ist ein Gewerbe die sauberste Lösung.</div></div>
+      </div>
+      <div class="faq">
+        <button class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">Wann wird ausgezahlt?</span><span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Leads werden wöchentlich abgerechnet und jeden Freitag überwiesen. Abschluss-Boni (300 €) werden ausgezahlt sobald die Installation bestätigt ist.</div></div>
+      </div>
+      <div class="faq">
+        <button class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">Was passiert wenn ein Lead kein Eigenheim hat?</span><span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Leads werden von uns geprüft bevor sie abgerechnet werden. Qualifizierst du falsch, wirst du nicht bezahlt – aber auch nicht bestraft. Fehler in der Anfangsphase sind normal.</div></div>
+      </div>
+      <div class="faq">
+        <button class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">Wie viele Stunden muss ich mindestens arbeiten?</span><span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Keine Mindestanforderung. Du arbeitest wann und wie viel du willst. Wer ernsthaft dabei ist, macht mindestens 3–4 Halbtage pro Woche.</div></div>
+      </div>
+      <div class="faq">
+        <button class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">In welchen Gebieten darf ich arbeiten?</span><span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Wir weisen Gebiete zu um Überschneidungen zu vermeiden. Du bekommst ein Stadtgebiet oder eine Region exklusiv – Details klären wir im Erstgespräch.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="form-section reveal" id="bewerben">
+    <div class="form-head">
+      <div class="form-title">Jetzt <em>bewerben</em></div>
+      <p class="form-sub">Kein Lebenslauf nötig. Beantworte vier Fragen – wir melden uns innerhalb von 24 Stunden.</p>
+    </div>
+    <div id="fc">
+      <div class="fg-row">
+        <div class="fg"><label>Name</label><input type="text" id="f-name" placeholder="Dein Name"></div>
+        <div class="fg"><label>Telefon</label><input type="tel" id="f-tel" placeholder="+49 ···"></div>
+      </div>
+      <div class="fg-row">
+        <div class="fg"><label>Wohnort</label><input type="text" id="f-ort" placeholder="Stadt / PLZ"></div>
+        <div class="fg"><label>Verfügbarkeit</label>
+          <select id="f-time">
+            <option value="" disabled selected>Wählen…</option>
+            <option>Teilzeit (2–3 Tage / Woche)</option>
+            <option>Halbzeit (3–4 Tage / Woche)</option>
+            <option>Fast Vollzeit (5+ Tage / Woche)</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg"><label>Warum du? (optional)</label><textarea id="f-why" placeholder="1–2 Sätze reichen."></textarea></div>
+      <button class="submit-btn" onclick="submitForm()">Bewerbung abschicken →</button>
+      <div class="form-footnote">Kein Spam · Kein Lebenslauf · Antwort in 24 h</div>
+    </div>
+    <div class="form-success" id="fs">
+      <div class="success-ring">✓</div>
+      <div class="success-hed">Bewerbung eingegangen.</div>
+      <p class="success-sub">Wir melden uns innerhalb von 24 Stunden.<br>Schau auch in deinen Spam-Ordner.</p>
+    </div>
+  </div>
+
+  <footer>
+    <span class="footer-text">Partnerschaft mit Enpal · Provisionsbasierte Zusammenarbeit · Gewerbeschein empfohlen</span>
+    <span class="footer-mark"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9ff5f0fdecdffae7fef2eff3fab1fcf0f2">[email&#160;protected]</a></span>
+  </footer>
+
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('vis');
+        e.target.querySelectorAll('[data-target]').forEach(animCount);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  function animCount(el) {
+    const target = +el.dataset.target, suffix = el.dataset.suffix || '';
+    let n = 0; const step = target / 55;
+    const t = setInterval(() => { n = Math.min(n + step, target); el.textContent = Math.round(n) + suffix; if (n >= target) clearInterval(t); }, 25);
+  }
+
+  const doors = document.getElementById('doors');
+  const days  = document.getElementById('days');
+  const rate  = document.getElementById('rate');
+  function recalc() {
+    const d = +doors.value, w = +days.value, r = +rate.value;
+    document.getElementById('doors-val').textContent = d;
+    document.getElementById('days-val').textContent  = w;
+    document.getElementById('rate-val').textContent  = r + ' %';
+    const leads = Math.floor(d * (r/100)) * w * 4;
+    const base  = leads * 50;
+    const bonus = base + leads * 0.15 * 300;
+    document.getElementById('r-leads').textContent = leads;
+    document.getElementById('r-base').textContent  = base.toLocaleString('de-DE') + ' €';
+    document.getElementById('r-bonus').textContent = Math.round(bonus).toLocaleString('de-DE') + ' €';
+  }
+  [doors, days, rate].forEach(el => el.addEventListener('input', recalc));
+  recalc();
+
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq');
+    const open = item.classList.contains('open');
+    document.querySelectorAll('.faq').forEach(f => f.classList.remove('open'));
+    if (!open) item.classList.add('open');
+  }
+
+  function submitForm() {
+    const name = document.getElementById('f-name').value.trim();
+    const tel  = document.getElementById('f-tel').value.trim();
+    const ort  = document.getElementById('f-ort').value.trim();
+    const time = document.getElementById('f-time').value;
+    const why  = document.getElementById('f-why').value.trim();
+    if (!name || !tel) {
+      if (!name) document.getElementById('f-name').style.borderColor = '#8B4500';
+      if (!tel)  document.getElementById('f-tel').style.borderColor  = '#8B4500';
+      return;
+    }
+    // Save to localStorage
+    const apps = JSON.parse(localStorage.getItem('enpal_applications') || '[]');
+    apps.unshift({
+      id: Date.now(),
+      name, tel, ort, time, why,
+      date: new Date().toISOString(),
+      status: 'neu
