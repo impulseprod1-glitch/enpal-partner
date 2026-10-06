@@ -10,10 +10,20 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Lead Defteri">
 <meta name="format-detection" content="telephone=no">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
+/* Fonts are served from ./fonts (SIL OFL), no third-party requests */
+@font-face{font-family:'Barlow';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/barlow-latin-ext-400-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Barlow';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/barlow-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Barlow';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/barlow-latin-ext-500-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Barlow';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/barlow-latin-500-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Barlow';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/barlow-latin-ext-600-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Barlow';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/barlow-latin-600-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Barlow Semi Condensed';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/barlow-semi-condensed-latin-ext-500-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Barlow Semi Condensed';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/barlow-semi-condensed-latin-500-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Barlow Semi Condensed';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/barlow-semi-condensed-latin-ext-600-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Barlow Semi Condensed';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/barlow-semi-condensed-latin-600-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Barlow Semi Condensed';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/barlow-semi-condensed-latin-ext-700-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Barlow Semi Condensed';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/barlow-semi-condensed-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 :root{
   --bg:#ECEFF2; --surface:#FFFFFF; --field:#F5F7F9; --ink:#17202A; --muted:#5A6572; --line:#D6DCE2;
   --sign:#1C4E8F; --sign-ink:#FFFFFF; --accent:#1C4E8F; --amber:#F2B705; --amber-ink:#17202A;
@@ -92,6 +102,19 @@ kbd{font:600 11px/1 var(--font-c);border:1px solid currentColor;border-radius:4p
 .banner{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--info-bg);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:14px}
 .banner b{font-weight:600}
 .banner .btn{margin-left:auto}
+
+/* Sync */
+.syncchip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:20px;padding:5px 11px;font-weight:600;font-size:13px;white-space:nowrap;cursor:pointer;min-height:32px}
+span.syncchip{cursor:default;min-height:0}
+.syncchip::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.syncchip.ok::before{background:var(--ok)}
+.syncchip.busy::before{background:var(--sign)}
+.syncchip.off::before{background:var(--st-termin)}
+.syncchip.err{color:var(--warn);border-color:var(--warn)}
+.syncchip.err::before{background:var(--warn)}
+.codebox{font:600 19px/1.2 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.06em;text-align:center}
+details.adv{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
+details.adv summary{cursor:pointer;font-weight:600;color:var(--muted);font-size:14px}
 
 /* Buttons */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:10px;padding:8px 14px;font-weight:600;cursor:pointer;background:var(--sign);color:#fff;min-height:40px;white-space:nowrap;text-decoration:none;line-height:1.2}
@@ -391,6 +414,7 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
     <header class="top">
       <div><h1 id="vTitle"></h1><p class="sub" id="vSub"></p></div>
       <div class="top-act">
+        <button type="button" class="syncchip" id="syncChip" hidden></button>
         <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
           <input id="q" type="search" placeholder="Ara: isim, telefon, şehir …" aria-label="Lead ara" autocomplete="off"></label>
         <button type="button" class="btn amber" id="tNew">+ Yeni lead</button>
@@ -501,6 +525,11 @@ function nLead(l){
     nextDate:DS.test(l.nextDate||'')?l.nextDate:'',nextTime:HS.test(l.nextTime||'')?l.nextTime:'',nextText:str(l.nextText).trim(),
     extId:str(l.extId)};
 }
+function nAct(a){
+  if(!a||typeof a!=='object'||!TS.test(a.ts||'')||!TL[a.type])return null;
+  return {id:String(a.id||uid()),leadId:str(a.leadId),who:str(a.who),ts:a.ts,type:a.type,
+    outcome:(OL[a.outcome]||SL[a.outcome])?a.outcome:'',dur:Math.max(0,Math.round(num(a.dur,0))),text:str(a.text)};
+}
 function normalize(d){
   var s=fresh();
   if(!d||typeof d!=='object')return s;
@@ -514,10 +543,7 @@ function normalize(d){
   if(!st.sources.length)st.sources=DEF.sources.slice();
   var ids={};
   if(Array.isArray(d.leads))s.leads=d.leads.filter(function(l){return l&&typeof l==='object';}).map(nLead).filter(function(l){if(ids[l.id])return false;ids[l.id]=1;return true;});
-  if(Array.isArray(d.acts))s.acts=d.acts.filter(function(a){return a&&TS.test(a.ts||'')&&TL[a.type];}).map(function(a){
-    return {id:String(a.id||uid()),leadId:ids[a.leadId]?String(a.leadId):'',who:str(a.who),ts:a.ts,type:a.type,
-      outcome:(OL[a.outcome]||SL[a.outcome])?a.outcome:'',dur:Math.max(0,Math.round(num(a.dur,0))),text:str(a.text)};
-  });
+  if(Array.isArray(d.acts))s.acts=d.acts.map(nAct).filter(Boolean).map(function(a){if(!ids[a.leadId])a.leadId='';return a;});
   if(d.notes&&typeof d.notes==='object')Object.keys(d.notes).forEach(function(k){if(DS.test(k)&&typeof d.notes[k]==='string'&&d.notes[k].trim())s.notes[k]=d.notes[k];});
   return s;
 }
@@ -532,6 +558,7 @@ var state=load();
 function persist(){
   if(!storageOk){$('#storageNote').hidden=false;return;}
   try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){storageOk=false;$('#storageNote').hidden=false;}
+  if(scanLocal())syncSoon();
 }
 function commit(){persist();render();}
 function undoable(msg,fn){
@@ -924,6 +951,7 @@ function vSettings(){
   left.append(h('div',{class:'panel'},h('h2',{text:'Lead kaynakları'}),h('label',{class:'f'},h('span',{text:'Her satıra bir kaynak'}),srcTa),
     h('p',{class:'hint',text:'Lead formunda ve raporlarda kullanılır.'})));
   left.append(h('div',{class:'panel'},h('h2',{text:'Klavye kısayolları'}),keysList()));
+  right.append(syncPanel());
   right.append(h('div',{class:'panel'},h('h2',{text:'İçe aktar'}),
     h('p',{class:'hint',text:'Excel\'den hücreleri kopyalayıp yapıştırabilir veya CSV dosyası seçebilirsin. Aynı telefon numarası tekrar eklenmez.'}),
     h('div',{class:'btnrow'},btn('Excel / CSV içe aktar','',openImport),btn(sp?'Saha\'dan aktar ('+sp+' yeni)':'Saha\'dan aktar','sec',importSaha))));
@@ -933,10 +961,10 @@ function vSettings(){
     undoable('Tüm veriler silindi',function(){var s=state.settings;state=fresh();state.settings=s;});
   });
   right.append(h('div',{class:'panel'},h('h2',{text:'Veri ve yedekleme'}),
-    h('p',{class:'hint',text:'Tüm kayıtlar sadece bu bilgisayarda, bu tarayıcıda saklanır; sunucuya gönderilmez. Tarayıcı verisi silinirse kayıtlar da gider, bu yüzden haftada bir yedek al.'}),
+    h('p',{class:'hint',text:sync.on?'Kayıtlar bu cihazda saklanır ve uçtan uca şifreli olarak senkronize edilir. Yine de ayda bir yedek almak iyi bir alışkanlıktır.':'Kayıtlar bu cihazda, bu tarayıcıda saklanır. Bulut senkronu kapalıyken tarayıcı verisi silinirse kayıtlar da gider; haftada bir yedek al.'}),
     h('p',{class:'hint',text:'Son yedek: '+(st.lastBackup?fdate(st.lastBackup.slice(0,10))+' '+st.lastBackup.slice(11):'hiç alınmadı')+' · '+state.leads.length+' lead, '+state.acts.length+' kayıt'}),
     h('div',{class:'btnrow'},btn('Yedek indir (JSON)','',backup),btn('Yedek yükle','sec',restore),btn('Leadleri CSV indir','sec',exportLeads))));
-  right.append(h('div',{class:'panel'},h('h2',{text:'Tehlikeli bölge'}),h('p',{class:'hint',text:'Leadleri, kayıtları ve notları siler. Ayarlar kalır.'}),h('div',{class:'btnrow'},del)));
+  right.append(h('div',{class:'panel'},h('h2',{text:'Tehlikeli bölge'}),h('p',{class:'hint',text:'Leadleri, kayıtları ve notları siler. Ayarlar kalır.'+(sync.on?' Senkron açık olduğu için diğer cihazlardan da silinir.':'')}),h('div',{class:'btnrow'},del)));
   wrap.append(h('div',{class:'setgrid'},left,right));
   return wrap;
 }
@@ -1313,11 +1341,275 @@ function toast(msg,label,fn){
   el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove('show');},label?6000:2600);
 }
 
+/* Cloud sync (zero-knowledge). Every record is encrypted on this device with a key derived
+   from the sync code; the server only stores HMAC'd ids and AES-GCM ciphertext. */
+var SYNC_CFG={url:'',key:''}; // Supabase project URL + publishable key, filled after deployment
+var SKEY='leadDefteri.sync.v1';
+var CODE_ALPH='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+function plainObj(o){return o&&typeof o==='object'&&!Array.isArray(o)?o:{};}
+function genCode(){var b=crypto.getRandomValues(new Uint8Array(20)),s='';for(var i=0;i<20;i++)s+=CODE_ALPH[b[i]&31];return s;}
+function normCode(v){return String(v||'').toUpperCase().replace(/[^A-Z0-9]/g,'');}
+function validCode(c){if(c.length!==20)return false;for(var i=0;i<20;i++)if(CODE_ALPH.indexOf(c[i])<0)return false;return true;}
+function fmtCode(c){return c.replace(/(.{4})(?=.)/g,'$1-');}
+function loadSync(){
+  var s=null;try{s=JSON.parse(localStorage.getItem(SKEY)||'null');}catch(e){}
+  s=plainObj(s);
+  return {on:!!s.on&&validCode(str(s.code)),code:str(s.code),url:str(s.url),key:str(s.key),joined:!!s.joined,seq:Math.max(0,num(s.seq,0)),
+    h:plainObj(s.h),t:plainObj(s.t),p:plainObj(s.p),last:str(s.last),err:str(s.err)};
+}
+var sync=loadSync();
+function saveSync(){try{localStorage.setItem(SKEY,JSON.stringify(sync));}catch(e){}}
+function sUrl(){return (sync.url||SYNC_CFG.url).trim().replace(/\/+$/,'');}
+function sKey(){return (sync.key||SYNC_CFG.key).trim();}
+function syncReady(){return /^(https:\/\/[^\s/]+|http:\/\/(localhost|127\.0\.0\.1)(:\d+)?)$/.test(sUrl())&&!!sKey();}
+function pendingCount(){return Object.keys(sync.p).length;}
+
+/* Crypto */
+var te=new TextEncoder(),td=new TextDecoder(),keys_=null;
+function hexOf(buf){return Array.prototype.map.call(new Uint8Array(buf),function(b){return b.toString(16).padStart(2,'0');}).join('');}
+function b64(u8){var s='';for(var i=0;i<u8.length;i+=0x8000)s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));return btoa(s);}
+function unb64(s){var bin=atob(s),u=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u;}
+async function deriveKeys(code){
+  if(keys_&&keys_.code===code)return keys_;
+  var base=await crypto.subtle.importKey('raw',te.encode(code),'PBKDF2',false,['deriveBits']);
+  var bits=new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',salt:te.encode('lead-defteri/sync/v1'),iterations:210000,hash:'SHA-256'},base,768));
+  keys_={code:code,space:hexOf(bits.slice(64,96)),
+    aes:await crypto.subtle.importKey('raw',bits.slice(0,32),'AES-GCM',false,['encrypt','decrypt']),
+    mac:await crypto.subtle.importKey('raw',bits.slice(32,64),{name:'HMAC',hash:'SHA-256'},false,['sign'])};
+  return keys_;
+}
+async function serverId(k,rid){return hexOf(await crypto.subtle.sign('HMAC',k.mac,te.encode(rid)));}
+async function seal(k,rid,data){
+  var iv=crypto.getRandomValues(new Uint8Array(12));
+  var ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv:iv,additionalData:te.encode(k.space)},k.aes,te.encode(JSON.stringify({r:rid,d:data}))));
+  var out=new Uint8Array(12+ct.length);out.set(iv);out.set(ct,12);return b64(out);
+}
+async function unseal(k,p){
+  var u=unb64(p);
+  return JSON.parse(td.decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:u.slice(0,12),additionalData:te.encode(k.space)},k.aes,u.slice(12))));
+}
+
+/* Change tracking: fingerprint per record; anything that differs from the last synced
+   fingerprint is pending, with the local edit time used for last-write-wins. */
+function syncRecords(){
+  var r={},st=state.settings;
+  state.leads.forEach(function(l){r['l:'+l.id]=l;});
+  state.acts.forEach(function(a){r['a:'+a.id]=a;});
+  Object.keys(state.notes).forEach(function(d){r['n:'+d]=state.notes[d];});
+  r.s={name:st.name,sources:st.sources,goalCalls:st.goalCalls,goalAppts:st.goalAppts};
+  return r;
+}
+function fp(v){
+  var s=JSON.stringify(v),h1=0xdeadbeef,h2=0x41c6ce57;
+  for(var i=0;i<s.length;i++){var c=s.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677);}
+  h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);
+  h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
+  return (h2>>>0).toString(36)+(h1>>>0).toString(36)+s.length.toString(36);
+}
+function scanLocal(){
+  if(!sync||!sync.on||!sync.joined)return false;
+  var r=syncRecords(),now=Date.now(),ch=false;
+  Object.keys(r).forEach(function(k){var f=fp(r[k]);if(sync.h[k]!==f){sync.h[k]=f;sync.t[k]=now;sync.p[k]=1;ch=true;}});
+  Object.keys(sync.h).forEach(function(k){if(!(k in r)){delete sync.h[k];sync.t[k]=now;sync.p[k]=1;ch=true;}});
+  if(ch){saveSync();renderSyncChip();}
+  return ch;
+}
+function applyRemote(k,d){
+  var id=k.slice(2),i;
+  if(k==='s'){
+    if(d&&typeof d==='object'){var st=state.settings;
+      if(typeof d.name==='string')st.name=d.name;
+      if(Array.isArray(d.sources)){var src=d.sources.filter(function(x){return typeof x==='string'&&x.trim();});if(src.length)st.sources=src;}
+      st.goalCalls=Math.max(0,Math.round(num(d.goalCalls,st.goalCalls)));st.goalAppts=Math.max(0,Math.round(num(d.goalAppts,st.goalAppts)));}
+  }else if(k.slice(0,2)==='l:'){
+    for(i=0;i<state.leads.length&&state.leads[i].id!==id;i++);
+    if(!d||typeof d!=='object'){if(i<state.leads.length)state.leads.splice(i,1);}
+    else{var nl=nLead(Object.assign({},d,{id:id}));if(i<state.leads.length)state.leads[i]=nl;else state.leads.push(nl);}
+  }else if(k.slice(0,2)==='a:'){
+    for(i=0;i<state.acts.length&&state.acts[i].id!==id;i++);
+    var na=d&&typeof d==='object'?nAct(Object.assign({},d,{id:id})):null;
+    if(!na){if(i<state.acts.length)state.acts.splice(i,1);}
+    else if(i<state.acts.length)state.acts[i]=na;else state.acts.push(na);
+  }else if(k.slice(0,2)==='n:'&&DS.test(id)){
+    if(typeof d==='string'&&d.trim())state.notes[id]=d;else delete state.notes[id];
+  }
+}
+
+/* Transport: three RPC functions, see supabase/lead-defteri.sql */
+async function rpc(fn,body){
+  var key=sKey(),hd={'Content-Type':'application/json',apikey:key};
+  if(!/^sb_/.test(key))hd.Authorization='Bearer '+key;
+  var r=await fetch(sUrl()+'/rest/v1/rpc/'+fn,{method:'POST',headers:hd,body:JSON.stringify(body),cache:'no-store'});
+  if(!r.ok){var m='';try{m=(await r.json()).message||'';}catch(e){}throw new Error('Sunucu '+r.status+(m?': '+m:''));}
+  var txt=await r.text();return txt?JSON.parse(txt):null;
+}
+var syncBusy=false,syncAgain=false,syncTimer=null,syncState='';
+function syncSoon(ms){if(!sync.on)return;clearTimeout(syncTimer);syncTimer=setTimeout(function(){runSync(false);},ms==null?1500:ms);}
+async function runSync(full){
+  if(!sync.on||!syncReady())return;
+  if(syncBusy){syncAgain=true;return;}
+  if(navigator.onLine===false){setSyncStatus('offline');return;}
+  syncBusy=true;setSyncStatus('busy');
+  try{
+    var k=await deriveKeys(sync.code),joining=!sync.joined;
+    var since=(full||joining)?0:Math.max(0,sync.seq-50),maxSeq=sync.seq,touched={},got=0;
+    for(;;){
+      var rows=await rpc('ld_pull',{p_space:k.space,p_since:since})||[];
+      for(var i=0;i<rows.length;i++){
+        var row=rows[i],m;got++;
+        since=Math.max(since,+row.seq);maxSeq=Math.max(maxSeq,+row.seq);
+        try{m=await unseal(k,row.payload);}catch(e){continue;}
+        var u=+row.updated_at;
+        if(typeof m.r!=='string'||(sync.t[m.r]||0)>=u)continue;
+        applyRemote(m.r,m.d);touched[m.r]=1;delete sync.p[m.r];sync.t[m.r]=u;
+      }
+      if(rows.length<1000)break;
+    }
+    if(joining&&!got){
+      sync.on=false;sync.err='Bu koda ait bulut verisi bulunamadı.';saveSync();
+      setSyncStatus('');render();toast('Bu koda ait veri bulunamadı. Kodu kontrol et.');return;
+    }
+    var tk=Object.keys(touched);
+    if(tk.length){
+      var cur=syncRecords();
+      tk.forEach(function(x){if(x in cur)sync.h[x]=fp(cur[x]);else delete sync.h[x];});
+      try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}
+    }
+    sync.joined=true;
+    scanLocal();
+    var pend=Object.keys(sync.p);
+    if(pend.length){
+      var recs=syncRecords();
+      for(var b=0;b<pend.length;b+=200){
+        var part=pend.slice(b,b+200),out=[],stamp={};
+        for(var j=0;j<part.length;j++){var x=part[j],has=x in recs;stamp[x]=sync.t[x];
+          out.push({rid:await serverId(k,x),u:sync.t[x]||Date.now(),d:!has,p:await seal(k,x,has?recs[x]:null)});}
+        await rpc('ld_push',{p_space:k.space,p_rows:out});
+        part.forEach(function(x){if(sync.t[x]===stamp[x])delete sync.p[x];});
+      }
+    }
+    sync.seq=maxSeq;sync.last=nowTs();sync.err='';saveSync();
+    if(tk.length){if(joining)toast('Senkron tamam · '+state.leads.length+' lead');softRender();}
+    setSyncStatus('ok');
+  }catch(e){
+    sync.err=String(e&&e.message||e);saveSync();
+    setSyncStatus(navigator.onLine===false||/Failed to fetch|NetworkError|Load failed/i.test(sync.err)?'offline':'error');
+  }finally{
+    syncBusy=false;
+    if(syncAgain){syncAgain=false;syncSoon(300);}
+  }
+}
+function softRender(){
+  var a=document.activeElement;
+  if(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&$('#view').contains(a)){
+    renderSide();renderSyncChip();if(ui.lead)renderDrawer();
+    a.addEventListener('blur',function(){setTimeout(render,0);},{once:true});return;
+  }
+  render();
+}
+function setSyncStatus(s){syncState=s;renderSyncChip();}
+function relTs(ts){var d=ts.slice(0,10),t=ts.slice(11);return d===today()?t:relDay(d)+' '+t;}
+function syncText(){
+  var n=pendingCount();
+  if(!sync.on)return ['Kapalı',''];
+  if(syncState==='busy')return ['Senkronize ediliyor …','busy'];
+  if(syncState==='error')return ['Senkron hatası','err'];
+  if(syncState==='offline'||navigator.onLine===false)return ['Çevrimdışı'+(n?' · '+n+' bekliyor':''),'off'];
+  if(n)return [n+' değişiklik bekliyor','off'];
+  return ['Senkron'+(sync.last?' · '+relTs(sync.last):''),'ok'];
+}
+function renderSyncChip(){
+  var c=$('#syncChip');if(!c)return;
+  c.hidden=!sync.on;if(!sync.on)return;
+  var s=syncText();c.textContent=s[0];c.className='syncchip '+s[1];c.title=sync.err||'Bulut senkronu (uçtan uca şifreli)';
+}
+
+/* Sync actions */
+function resetSync(on,code,joined){Object.assign(sync,{on:on,code:code,joined:joined,seq:0,h:{},t:{},p:{},last:'',err:''});keys_=null;}
+function startSync(){
+  if(!syncReady()){toast('Önce sunucu ayarlarını gir');return;}
+  resetSync(true,genCode(),true);scanLocal();saveSync();
+  showCode(true);render();runSync(true);
+}
+function joinSync(v){
+  var code=normCode(v);
+  if(!validCode(code)){toast('Kod 20 karakter olmalı (ör. ABCD-EFGH-JKLM-NPQR-STUV)');return;}
+  if(!syncReady()){toast('Önce sunucu ayarlarını gir');return;}
+  resetSync(true,code,false);saveSync();render();runSync(true);
+}
+function stopSync(){resetSync(false,'',false);saveSync();setSyncStatus('');render();toast('Bu cihazda senkron kapatıldı, veriler cihazda duruyor');}
+async function wipeCloud(){
+  try{var k=await deriveKeys(sync.code);await rpc('ld_wipe',{p_space:k.space});stopSync();toast('Buluttaki şifreli veriler silindi');}
+  catch(e){toast('Silinemedi: '+(e&&e.message||e));}
+}
+function copyText(t,input){
+  function fallback(){if(input){input.select();try{document.execCommand('copy');toast('Kopyalandı');}catch(e){toast('Kopyalanamadı, elle seç');}}}
+  if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(t).then(function(){toast('Kopyalandı');},fallback);else fallback();
+}
+function showCode(isNew){
+  var inp=h('input',{class:'i codebox',readonly:true,'aria-label':'Senkron kodu'});inp.value=fmtCode(sync.code);
+  openModal(isNew?'Senkron kodun hazır':'Senkron kodu',h('div',null,
+    h('p',{class:'hint',style:'margin-top:0',text:'Telefonda Ayarlar → Bulut senkronu → "Koda bağlan" adımında bu kodu gir.'}),
+    inp,
+    h('div',{class:'btnrow'},btn('Kopyala','sec',function(){copyText(fmtCode(sync.code),inp);})),
+    h('div',{class:'note',style:'margin:14px 0 0'},
+      h('b',{text:'Kodu güvenli bir yere yaz. '}),'Verilerin bu kodla şifrelenir; kod kaybolursa buluttaki veri açılamaz (cihazdaki veriler durur). Kodu e-posta veya mesajla gönderme, telefona elle yaz.'),
+    h('div',{class:'formrow'},btn('Tamam','',closeModal))));
+}
+function armed(label,armedLabel,cls,fn){
+  var b=btn(label,cls,null);
+  b.addEventListener('click',function(){
+    if(!b.classList.contains('armed')){b.classList.add('armed');b.textContent=armedLabel;setTimeout(function(){if(document.contains(b)){b.classList.remove('armed');b.textContent=label;}},4000);return;}
+    fn();
+  });
+  return b;
+}
+function syncPanel(){
+  var p=h('div',{class:'panel'},h('h2',{text:'Bulut senkronu'}),
+    h('p',{class:'hint',text:'Telefon ve bilgisayar aynı verileri görür. Her kayıt bu cihazda AES-256 ile şifrelenir; anahtar sadece senin senkron kodunda. Sunucu (Frankfurt, AB) yalnızca okunamayan şifreli veri saklar, müşteri bilgilerini göremez.'}));
+  if(sync.on){
+    var s=syncText(),masked=fmtCode(sync.code).replace(/[A-Z0-9](?=[^]*-[A-Z0-9]{4}$)/g,'•');
+    p.append(h('dl',{class:'info',style:'margin-top:12px'},
+      h('dt',{text:'Durum'}),h('dd',null,h('span',{class:'syncchip '+s[1],text:s[0]})),
+      h('dt',{text:'Son senkron'}),h('dd',{text:sync.last?fdate(sync.last.slice(0,10))+' '+sync.last.slice(11):'—'}),
+      h('dt',{text:'Kod'}),h('dd',{style:'font-family:ui-monospace,Menlo,Consolas,monospace',text:masked}),
+      sync.err?h('dt',{text:'Son hata'}):null,sync.err?h('dd',{class:'late',text:sync.err}):null));
+    p.append(h('div',{class:'btnrow'},btn('Şimdi senkronize et','',function(){runSync(true);}),btn('Kodu göster','sec',function(){showCode(false);}),
+      armed('Bu cihazda kapat','Emin misin? Tekrar tıkla','sec',stopSync)));
+    p.append(h('div',{class:'btnrow'},armed('Buluttan tamamen sil','Tüm cihazlar için silinsin mi? Tekrar tıkla','danger sm',wipeCloud)));
+    p.append(h('p',{class:'hint',text:'"Buluttan tamamen sil" sunucudaki şifreli kopyayı siler; cihazlardaki veriler kalır.'}));
+  }else if(syncReady()){
+    var ci=h('input',{class:'i codebox',placeholder:'ABCD-EFGH-JKLM-NPQR-STUV','aria-label':'Senkron kodu',autocomplete:'off',autocapitalize:'characters',spellcheck:'false'});
+    ci.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();joinSync(ci.value);}});
+    p.append(h('p',{class:'hint',style:'color:var(--ink);font-weight:600',text:'İlk cihazda (ör. bilgisayar) senkronu başlat, diğer cihazda kodla bağlan.'}),
+      h('div',{class:'btnrow'},btn('Bu cihazda senkronu başlat','',startSync)),
+      h('label',{class:'f'},h('span',{text:'veya mevcut koda bağlan'}),ci),
+      h('div',{class:'btnrow'},btn('Koda bağlan','sec',function(){joinSync(ci.value);})),
+      sync.err?h('p',{class:'err',text:sync.err}):null);
+  }else{
+    p.append(h('p',{class:'note',style:'margin:12px 0 0',text:'Sunucu henüz ayarlanmadı. Supabase projesi kurulunca adresi ve publishable key aşağıya girilir.'}));
+  }
+  if(!SYNC_CFG.url||!SYNC_CFG.key||sync.url||sync.key){
+    var u=h('input',{class:'i',placeholder:'https://xxxx.supabase.co','aria-label':'Sunucu adresi',autocomplete:'off'});u.value=sync.url;
+    var kk=h('input',{class:'i',placeholder:'sb_publishable_…','aria-label':'Publishable key',autocomplete:'off'});kk.value=sync.key;
+    p.append(h('details',{class:'adv'},h('summary',{text:'Sunucu ayarları'}),
+      h('label',{class:'f'},h('span',{text:'Supabase adresi'}),u),h('label',{class:'f'},h('span',{text:'Publishable key'}),kk),
+      h('div',{class:'btnrow'},btn('Kaydet','sm',function(){sync.url=u.value.trim();sync.key=kk.value.trim();saveSync();
+        toast(syncReady()?'Sunucu ayarları kaydedildi':'Adres https:// ile başlamalı');renderView();}))));
+  }
+  return p;
+}
+window.addEventListener('online',function(){renderSyncChip();runSync(false);});
+window.addEventListener('offline',function(){setSyncStatus('offline');});
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')runSync(false);});
+setInterval(function(){if(document.visibilityState==='visible')runSync(false);},20000);
+
 /* Navigation & wiring */
 function go(v){if(location.hash!=='#'+v)location.hash=v;else{ui.view=v;render();}}
 window.addEventListener('hashchange',function(){var v=location.hash.slice(1);if(VIEWS[v]&&v!==ui.view){ui.view=v;render();}});
 document.querySelectorAll('#nav button').forEach(function(b){b.addEventListener('click',function(){go(b.dataset.view);});});
 $('#tNew').addEventListener('click',function(){openLeadForm(null);});
+$('#syncChip').addEventListener('click',function(){go('settings');});
 $('#kbHelp').addEventListener('click',function(){openModal('Klavye kısayolları',keysList());});
 $('#mClose').addEventListener('click',closeModal);
 $('#scrim').addEventListener('click',closeLead);
@@ -1341,6 +1633,7 @@ document.addEventListener('keydown',function(e){
 });
 window.addEventListener('storage',function(e){
   if(e.key===KEY&&e.newValue){try{state=normalize(JSON.parse(e.newValue));render();}catch(x){}}
+  else if(e.key===SKEY){sync=loadSync();keys_=null;renderSyncChip();}
   else if(e.key==='saha_log'&&ui.view==='today')renderView();
 });
 setInterval(function(){if(today()!==lastDay){lastDay=today();ui.jMonth=lastDay.slice(0,7);render();}},60000);
@@ -1348,6 +1641,8 @@ setInterval(function(){if(today()!==lastDay){lastDay=today();ui.jMonth=lastDay.s
 var hv=location.hash.slice(1);ui.view=VIEWS[hv]?hv:'today';
 if(!storageOk)$('#storageNote').hidden=false;
 render();
+renderSyncChip();
+runSync(true);
 })();
 </script>
 </body>
