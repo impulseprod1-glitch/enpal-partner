@@ -406,7 +406,7 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
     <div class="side-foot">
       <p id="bkNote"></p>
       <button type="button" class="linkbtn" id="kbHelp">Klavye kısayolları <kbd>?</kbd></button>
-      <a class="linkbtn" href="index.html.html" style="text-decoration:none">← Ana menü</a>
+      <a class="linkbtn" id="homeLink" href="index.html.html" style="text-decoration:none" hidden>← Ana menü</a>
     </div>
   </aside>
 
@@ -1343,7 +1343,7 @@ function toast(msg,label,fn){
 
 /* Cloud sync (zero-knowledge). Every record is encrypted on this device with a key derived
    from the sync code; the server only stores HMAC'd ids and AES-GCM ciphertext. */
-var SYNC_CFG={url:'',key:''}; // Supabase project URL + publishable key, filled after deployment
+var SYNC_CFG={url:''}; // sync server; empty = the site that serves this page (Netlify)
 var SKEY='leadDefteri.sync.v1';
 var CODE_ALPH='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 function plainObj(o){return o&&typeof o==='object'&&!Array.isArray(o)?o:{};}
@@ -1354,14 +1354,14 @@ function fmtCode(c){return c.replace(/(.{4})(?=.)/g,'$1-');}
 function loadSync(){
   var s=null;try{s=JSON.parse(localStorage.getItem(SKEY)||'null');}catch(e){}
   s=plainObj(s);
-  return {on:!!s.on&&validCode(str(s.code)),code:str(s.code),url:str(s.url),key:str(s.key),joined:!!s.joined,seq:Math.max(0,num(s.seq,0)),
+  return {on:!!s.on&&validCode(str(s.code)),code:str(s.code),url:str(s.url),e:str(s.e),joined:!!s.joined,seq:Math.max(0,num(s.seq,0)),
     h:plainObj(s.h),t:plainObj(s.t),p:plainObj(s.p),last:str(s.last),err:str(s.err)};
 }
 var sync=loadSync();
 function saveSync(){try{localStorage.setItem(SKEY,JSON.stringify(sync));}catch(e){}}
-function sUrl(){return (sync.url||SYNC_CFG.url).trim().replace(/\/+$/,'');}
-function sKey(){return (sync.key||SYNC_CFG.key).trim();}
-function syncReady(){return /^(https:\/\/[^\s/]+|http:\/\/(localhost|127\.0\.0\.1)(:\d+)?)$/.test(sUrl())&&!!sKey();}
+function sameOrigin(){return location.protocol==='https:'||/^(localhost|127\.0\.0\.1)$/.test(location.hostname)?location.origin:'';}
+function sUrl(){return (sync.url||SYNC_CFG.url||sameOrigin()).trim().replace(/\/+$/,'');}
+function syncReady(){return /^(https:\/\/[^\s/]+|http:\/\/(localhost|127\.0\.0\.1)(:\d+)?)$/.test(sUrl());}
 function pendingCount(){return Object.keys(sync.p).length;}
 
 /* Crypto */
@@ -1435,11 +1435,9 @@ function applyRemote(k,d){
   }
 }
 
-/* Transport: three RPC functions, see supabase/lead-defteri.sql */
+/* Transport: pull / push / wipe, see netlify/functions/sync.mts */
 async function rpc(fn,body){
-  var key=sKey(),hd={'Content-Type':'application/json',apikey:key};
-  if(!/^sb_/.test(key))hd.Authorization='Bearer '+key;
-  var r=await fetch(sUrl()+'/rest/v1/rpc/'+fn,{method:'POST',headers:hd,body:JSON.stringify(body),cache:'no-store'});
+  var r=await fetch(sUrl()+'/api/sync/'+fn,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),cache:'no-store'});
   if(!r.ok){var m='';try{m=(await r.json()).message||'';}catch(e){}throw new Error('Sunucu '+r.status+(m?': '+m:''));}
   var txt=await r.text();return txt?JSON.parse(txt):null;
 }
@@ -1452,18 +1450,25 @@ async function runSync(full){
   syncBusy=true;setSyncStatus('busy');
   try{
     var k=await deriveKeys(sync.code),joining=!sync.joined;
-    var since=(full||joining)?0:Math.max(0,sync.seq-50),maxSeq=sync.seq,touched={},got=0;
+    var since=(full||joining)?0:sync.seq,maxSeq=since,touched={},got=0;
     for(;;){
-      var rows=await rpc('ld_pull',{p_space:k.space,p_since:since})||[];
+      var res=await rpc('pull',{p_space:k.space,p_since:since,p_epoch:sync.e})||{};
+      if(res.epoch===''&&sync.e&&!joining){
+        resetSync(false,'',false);saveSync();setSyncStatus('');render();
+        toast('Bulut kopyası başka bir cihazdan silindi; senkron kapatıldı. Veriler bu cihazda duruyor.');return;
+      }
+      if(typeof res.epoch==='string'&&res.epoch!==sync.e){sync.e=res.epoch;maxSeq=0;}
+      var rows=Array.isArray(res.rows)?res.rows:[];
       for(var i=0;i<rows.length;i++){
         var row=rows[i],m;got++;
-        since=Math.max(since,+row.seq);maxSeq=Math.max(maxSeq,+row.seq);
+        maxSeq=Math.max(maxSeq,+row.seq);
         try{m=await unseal(k,row.payload);}catch(e){continue;}
         var u=+row.updated_at;
         if(typeof m.r!=='string'||(sync.t[m.r]||0)>=u)continue;
         applyRemote(m.r,m.d);touched[m.r]=1;delete sync.p[m.r];sync.t[m.r]=u;
       }
-      if(rows.length<1000)break;
+      if(!res.more)break;
+      since=+res.cursor||0;
     }
     if(joining&&!got){
       sync.on=false;sync.err='Bu koda ait bulut verisi bulunamadı.';saveSync();
@@ -1484,7 +1489,7 @@ async function runSync(full){
         var part=pend.slice(b,b+200),out=[],stamp={};
         for(var j=0;j<part.length;j++){var x=part[j],has=x in recs;stamp[x]=sync.t[x];
           out.push({rid:await serverId(k,x),u:sync.t[x]||Date.now(),d:!has,p:await seal(k,x,has?recs[x]:null)});}
-        await rpc('ld_push',{p_space:k.space,p_rows:out});
+        await rpc('push',{p_space:k.space,p_rows:out});
         part.forEach(function(x){if(sync.t[x]===stamp[x])delete sync.p[x];});
       }
     }
@@ -1525,7 +1530,7 @@ function renderSyncChip(){
 }
 
 /* Sync actions */
-function resetSync(on,code,joined){Object.assign(sync,{on:on,code:code,joined:joined,seq:0,h:{},t:{},p:{},last:'',err:''});keys_=null;}
+function resetSync(on,code,joined){Object.assign(sync,{on:on,code:code,joined:joined,seq:0,e:'',h:{},t:{},p:{},last:'',err:''});keys_=null;}
 function startSync(){
   if(!syncReady()){toast('Önce sunucu ayarlarını gir');return;}
   resetSync(true,genCode(),true);scanLocal();saveSync();
@@ -1539,7 +1544,7 @@ function joinSync(v){
 }
 function stopSync(){resetSync(false,'',false);saveSync();setSyncStatus('');render();toast('Bu cihazda senkron kapatıldı, veriler cihazda duruyor');}
 async function wipeCloud(){
-  try{var k=await deriveKeys(sync.code);await rpc('ld_wipe',{p_space:k.space});stopSync();toast('Buluttaki şifreli veriler silindi');}
+  try{var k=await deriveKeys(sync.code);await rpc('wipe',{p_space:k.space});stopSync();toast('Buluttaki şifreli veriler silindi');}
   catch(e){toast('Silinemedi: '+(e&&e.message||e));}
 }
 function copyText(t,input){
@@ -1566,7 +1571,7 @@ function armed(label,armedLabel,cls,fn){
 }
 function syncPanel(){
   var p=h('div',{class:'panel'},h('h2',{text:'Bulut senkronu'}),
-    h('p',{class:'hint',text:'Telefon ve bilgisayar aynı verileri görür. Her kayıt bu cihazda AES-256 ile şifrelenir; anahtar sadece senin senkron kodunda. Sunucu (Frankfurt, AB) yalnızca okunamayan şifreli veri saklar, müşteri bilgilerini göremez.'}));
+    h('p',{class:'hint',text:'Telefon ve bilgisayar aynı verileri görür. Her kayıt bu cihazda AES-256 ile şifrelenir; anahtar sadece senin senkron kodunda. Sunucu yalnızca okunamayan şifreli veri saklar, müşteri bilgilerini göremez.'}));
   if(sync.on){
     var s=syncText(),masked=fmtCode(sync.code).replace(/[A-Z0-9](?=[^]*-[A-Z0-9]{4}$)/g,'•');
     p.append(h('dl',{class:'info',style:'margin-top:12px'},
@@ -1587,22 +1592,22 @@ function syncPanel(){
       h('div',{class:'btnrow'},btn('Koda bağlan','sec',function(){joinSync(ci.value);})),
       sync.err?h('p',{class:'err',text:sync.err}):null);
   }else{
-    p.append(h('p',{class:'note',style:'margin:12px 0 0',text:'Sunucu henüz ayarlanmadı. Supabase projesi kurulunca adresi ve publishable key aşağıya girilir.'}));
+    p.append(h('p',{class:'note',style:'margin:12px 0 0',text:'Senkron için uygulamayı yayınlandığı web adresinden aç ya da aşağıya sunucu adresini gir.'}));
   }
-  if(!SYNC_CFG.url||!SYNC_CFG.key||sync.url||sync.key){
-    var u=h('input',{class:'i',placeholder:'https://xxxx.supabase.co','aria-label':'Sunucu adresi',autocomplete:'off'});u.value=sync.url;
-    var kk=h('input',{class:'i',placeholder:'sb_publishable_…','aria-label':'Publishable key',autocomplete:'off'});kk.value=sync.key;
-    p.append(h('details',{class:'adv'},h('summary',{text:'Sunucu ayarları'}),
-      h('label',{class:'f'},h('span',{text:'Supabase adresi'}),u),h('label',{class:'f'},h('span',{text:'Publishable key'}),kk),
-      h('div',{class:'btnrow'},btn('Kaydet','sm',function(){sync.url=u.value.trim();sync.key=kk.value.trim();saveSync();
-        toast(syncReady()?'Sunucu ayarları kaydedildi':'Adres https:// ile başlamalı');renderView();}))));
+  if(!sync.on&&(!sameOrigin()||sync.url)){
+    var u=h('input',{class:'i',placeholder:'https://….netlify.app','aria-label':'Sunucu adresi',autocomplete:'off'});u.value=sync.url;
+    p.append(h('details',{class:'adv',open:!syncReady()},h('summary',{text:'Sunucu adresi'}),
+      h('p',{class:'hint',text:'Sadece dosya bilgisayardan yerel olarak açıldığında gerekir; yayınlanan adreste kendiliğinden ayarlıdır.'}),
+      h('label',{class:'f'},h('span',{text:'Adres'}),u),
+      h('div',{class:'btnrow'},btn('Kaydet','sm',function(){sync.url=u.value.trim();saveSync();
+        toast(syncReady()?'Sunucu adresi kaydedildi':'Adres https:// ile başlamalı');renderView();}))));
   }
   return p;
 }
 window.addEventListener('online',function(){renderSyncChip();runSync(false);});
 window.addEventListener('offline',function(){setSyncStatus('offline');});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')runSync(false);});
-setInterval(function(){if(document.visibilityState==='visible')runSync(false);},20000);
+setInterval(function(){if(document.visibilityState==='visible')runSync(false);},60000);
 
 /* Navigation & wiring */
 function go(v){if(location.hash!=='#'+v)location.hash=v;else{ui.view=v;render();}}
@@ -1640,6 +1645,7 @@ setInterval(function(){if(today()!==lastDay){lastDay=today();ui.jMonth=lastDay.s
 
 var hv=location.hash.slice(1);ui.view=VIEWS[hv]?hv:'today';
 if(!storageOk)$('#storageNote').hidden=false;
+if(location.protocol==='file:')$('#homeLink').hidden=false;
 render();
 renderSyncChip();
 runSync(true);

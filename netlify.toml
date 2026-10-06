@@ -1,0 +1,15 @@
+# Netlify site for Lead Defteri: only the app, its fonts and the sync function are published.
+[build]
+  command = "rm -rf dist && mkdir dist && cp enpal-lead-defteri.html dist/index.html && cp -r fonts dist/fonts"
+  publish = "dist"
+
+[functions]
+  directory = "netlify/functions"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Referrer-Policy = "no-referrer"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
